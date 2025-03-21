@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tony Komforty | Frontend Developer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add p5.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <style>
+        /* Variables */
+        :root {
+            --primary-color: #2d3436;
+            --secondary-color: #4317D8;
+            --accent-color: #00cec9;
+            --text-color: #dfe6e9;
+            --background-color: #1e272e;
+            --card-color: #2d3436;
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Header */
+        header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(30, 39, 46, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-color);
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.42);
+        }
+
+        /* About Section */
+        .about {
+            padding: 4rem 10%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* P5.js container for about image */
+        #about-image-container {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Make the p5 canvas responsive */
+        #about-image-container canvas {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .skill-tag {
+            background-color: var(--card-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .skill-tag:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Portfolio Section with iframe */
+        .portfolio {
+            padding: 6rem 10%;
+            background-color: rgba(45, 52, 54, 0.3);
+        }
+
+        .portfolio-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .portfolio-intro p {
+            margin-top: 1rem;
+        }
+
+        .portfolio-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .tab {
+            padding: 0.7rem 1.5rem;
+            background-color: var(--card-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab.active, .tab:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .portfolio-showcase {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background-color: var(--card-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .portfolio-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .project-info {
+            background-color: var(--card-color);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .project-info h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .project-tech span {
+            padding: 0.3rem 0.8rem;
+            background-color: rgba(0, 206, 201, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 10%;
+        }
+
+        .contact-form {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--card-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            padding: 3rem 10%;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-showcase {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .about, .portfolio, .contact {
+                padding: 4rem 5%;
+            }
+
+            .portfolio-showcase {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 0 5%;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .portfolio-showcase {
+                height: 350px;
+            }
+        }
+
+        /* Animation for portfolio showcase */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">tkomforty</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <!-- P5.js container for hero background -->
+        <div id="hero-container"></div>
+        
+        <div class="hero-content">
+            <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer & Creative Coder</h1>
+            <p>I make interactive experiences</p>
+            <div class="hero-btns">
+                <a href="#portfolio" class="btn btn-primary">View My Work</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div id="about-image-container"></div>
+        <div class="about-content">
+            <h2 class="section-title">About Me</h2>
+            <p>I'm a junior frontend developer with a passion for creating interactive web experiences that use tech to blend art, music and touch.</p>
+            <p>My background in audio, music and cooking has given me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries and pushing unique things out into the world.</p>
+            <p>I use code to make generative art, instruments, and interactive/reactive elements.</p>
+            <div class="skills">
+                <span class="skill-tag">HTML5</span>
+                <span class="skill-tag">CSS3</span>
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">tone.js</span>
+                <span class="skill-tag">p5.js</span>
+                <span class="skill-tag">Three.js</span>
+                <span class="skill-tag">Responsive Design</span>
+                <span class="skill-tag">CSS Animation</span>
+                <span class="skill-tag">Git</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="portfolio-intro">
+            <h2 class="section-title">Selected Works</h2>
+            <p>made using a combination of three.js, tone.js, p5.js</p>
+        </div>
+        <div class="portfolio-tabs">
+            <div class="tab active" data-project="project1">sonic field</div>
+            <div class="tab" data-project="project2">audio room</div>
+            <div class="tab" data-project="project3">shader waves</div>
+            <div class="tab" data-project="project4">website motion</div>
+        </div>
+        <div class="portfolio-showcase">
+            <iframe id="portfolioFrame" class="portfolio-iframe" src="about:blank" title="Portfolio Showcase"></iframe>
+        </div>
+        <div class="project-info">
+            <h3 id="projectTitle">Interactive Audio Visualizer</h3>
+            <p id="projectDescription">An interactive audio visualizer built with the Web Audio API and Canvas. Upload your own music and watch as the visualizer creates a unique experience based on the audio frequencies.</p>
+            <div class="project-tech">
+                <span>HTML5</span>
+                <span>CSS3</span>
+                <span>JavaScript</span>
+                <span>Web Audio API</span>
+                <span>Canvas</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Your email address">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" placeholder="Tell me about your project or any opportunities"></textarea>
+            </div>
+            <button class="btn btn-primary">Send Message</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-soundcloud"></i></a>
+        </div>
+        <p class="copyright">© <span id="year">2025</span> Tony Komforty. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for portfolio and general site functionality -->
+    <script>
+        // Update copyright year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Portfolio projects data
+        const projects = {
+            project1: {
+                title: "Generative Audio Instrument",
+                description: "Harmonious notes autoselected, triggered by user interaction.",
+                url: "https://tkomforty.github.io/sonicField/", 
+                tech: ["HTML5", "p5.js", "JavaScript", "tone.js", "Canvas"]
+            },
+            project2: {
+                title: "Audio Room",
+                description: "A room where notes are triggered by spheres colliding. User can add or remove spheres, and change settings such as gravity.",
+                url: "https://tkomforty.github.io/musicalSpheres/", 
+                tech: ["HTML5", "CSS3", "cannon.js", "p5.js"]
+            },
+            project3: {
+                title: "Shader Waves",
+                description: "Clickable interactive implementation of a shader in JS. Focus on cross-system and touch compatibility",
+                url: "https://tkomforty.github.io/shaderWaves/", 
+                tech: ["HTML5", "CSS3", "JavaScript", "React"]
+            },
+            project4: {
+                title: "Sand Flow",
+                description: "Implementing an instanced version of p5.js in HTML, to operate as a dynamic, user-modifiable background. ",
+                url: "https://tkomforty.github.io/instancedp5_2/", 
+                tech: ["HTML5", "CSS3", "JavaScript", "p5.js", "React"]
+            }
+        };
+
+        // Handle portfolio tabs
+        const tabs = document.querySelectorAll('.tab');
+        const portfolioFrame = document.getElementById('portfolioFrame');
+        const projectTitle = document.getElementById('projectTitle');
+        const projectDescription = document.getElementById('projectDescription');
+        const projectTech = document.querySelector('.project-tech');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Get project data
+                const projectKey = tab.getAttribute('data-project');
+                const project = projects[projectKey];
+                
+                // Update project info
+                projectTitle.textContent = project.title;
+                projectDescription.textContent = project.description;
+                
+                // Update tech tags
+                projectTech.innerHTML = '';
+                project.tech.forEach(tech => {
+                    const span = document.createElement('span');
+                    span.textContent = tech;
+                    projectTech.appendChild(span);
+                });
+                
+                // Update iframe (with animation)
+                portfolioFrame.style.opacity = 0;
+                setTimeout(() => {
+                    portfolioFrame.src = project.url;
+                    portfolioFrame.style.opacity = 1;
+                }, 300);
+            });
+        });
+
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const nav = document.querySelector('nav ul');
+        
+        mobileMenu.addEventListener('click', () => {
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Close mobile menu if open
+                nav.style.display = 'none';
+            });
+        });
+
+        // Set the first project as default
+        document.querySelector('.tab.active').click();
+    </script>
+
+    <!-- P5.js sketches -->
+    <script>
+        // Hero visualization sketch
+        const heroSketch = function(p) {
+          let points = [];
+          const numPoints = 50;
+          const connectionRadius = 150;
+          const primaryColor = p.color(67, 23, 216); // Purple
+          const accentColor = p.color(0, 206, 201);  // Teal
+          
+          p.setup = function() {
+            // Canvas will be created to match the hero container size
+            const heroContainer = document.getElementById('hero-container');
+            p.createCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
+            
+            // Initialize points randomly across the canvas
+            for (let i = 0; i < numPoints; i++) {
+              points.push({
+                pos: p.createVector(p.random(p.width), p.random(p.height)),
+                vel: p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5)),
+                size: p.random(3, 8),
+                color: p.lerpColor(primaryColor, accentColor, p.random())
+              });
+            }
+          };
+        
+          p.draw = function() {
+            p.clear();
+            
+            // Draw connections between points
+            p.stroke(255, 30);
+            
+            for (let i = 0; i < points.length; i++) {
+              for (let j = i + 1; j < points.length; j++) {
+                const p1 = points[i].pos;
+                const p2 = points[j].pos;
+                const d = p.dist(p1.x, p1.y, p2.x, p2.y);
+                
+                if (d < connectionRadius) {
+                  // The closer the points, the more opaque the line
+                  const alpha = p.map(d, 0, connectionRadius, 100, 0);
+                  p.stroke(255, alpha);
+                  p.line(p1.x, p1.y, p2.x, p2.y);
+                 // p.strokeWeight(alpha/16);
+                }
+              }
+            }
+            
+            // Update and draw points
+            for (let point of points) {
+              // Update position with velocity
+              point.pos.add(point.vel);
+              
+              // Bounce off edges
+              if (point.pos.x < 0 || point.pos.x > p.width) point.vel.x *= -1;
+              if (point.pos.y < 0 || point.pos.y > p.height) point.vel.y *= -1;
+              
+              // Draw point
+              p.noStroke();
+              p.fill(point.color);
+              p.circle(point.pos.x, point.pos.y, point.size);
+            }
+            
+            // Add gradient overlay
+            const gradientHeight = p.height / 2;
+            for (let y = 0; y < gradientHeight; y++) {
+              const alpha = p.map(y, 0, gradientHeight, 50, 0);
+              p.stroke(30, 39, 46, alpha);
+              p.line(0, y, p.width, y);
+              p.line(0, p.height - y, p.width, p.height - y);
+            }
+          };
+          
+          // Handle window resize
+          p.windowResized = function() {
+            const heroContainer = document.getElementById('hero-container');
+            p.resizeCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
+            
+            // Redistribute points on resize
+            for (let point of points) {
+              if (point.pos.x > p.width) point.pos.x = p.random(p.width);
+              if (point.pos.y > p.height) point.pos.y = p.random(p.height);
+            }
+          };
+        };
+        
+        // About section sketch using your provided code
+ // About section sketch - direct adaptation of original code
+// About section sketch - direct adaptation with fixes for centering and transparency
+// Alternative approach - full black background with custom fadeout
+const aboutSketch = function(p) {
+    let img1;
+    let img2;
+    let col_A = 0;
+    let col_B = 0;
+    let col_C = 0;
+    let col_D = 0;
+    let transition = false;
+    let imageRatio = 0; // To store the aspect ratio of the loaded image
+    
+    class Point {
+        x;
+        y;
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+        getX() {
+            return this.x;
+        }
+        getY() {
+            return this.y;
+        }
+        draw(last_x, last_y) {
+            this.x = last_x + p.random(-p.mouseX / 10, p.mouseX / 10);
+            this.y = last_y + p.random(-p.mouseX / 10, p.mouseX / 10);
+        }
+    }
+    
+    let point = new Array(4);
+    
+    p.preload = function() {
+        // Load me3.png as requested
+        img2 = p.loadImage('me3.png', 
+            // Success callback - store the aspect ratio when image loads
+            function() {
+                imageRatio = img2.height / img2.width;
+            },
+            // Error callback - create placeholder if image fails to load
+            function() {
+                console.log('Failed to load me3.png, creating placeholder');
+                img2 = p.createImage(854, 480);
+                img2.loadPixels();
+                for (let i = 0; i < img2.width; i++) {
+                    for (let j = 0; j < img2.height; j++) {
+                        // Create a gradient with the site's colors
+                        let r = p.map(i, 0, img2.width, 30, 67);
+                        let g = p.map(j, 0, img2.height, 39, 23);
+                        let b = p.map(i+j, 0, img2.width+img2.height, 46, 216);
+                        img2.set(i, j, p.color(r, g, b, 255));
+                    }
+                }
+                img2.updatePixels();
+                imageRatio = img2.height / img2.width;
+            }
+        );
+    };
+    
+    p.setup = function() {
+        const aboutImageContainer = document.getElementById('about-image-container');
+        const containerWidth = aboutImageContainer.offsetWidth;
+        const containerHeight = containerWidth * (imageRatio || (9/16));
+        
+        p.createCanvas(containerWidth, containerHeight);
+        
+        // Just use black background as in original sketch
+        p.background(0);
+        p.noFill();
+        p.rectMode(p.CENTER);
+        
+        for (let i = 0; i < 4; i++) {
+            point[i] = new Point(p.random(p.width / 4), p.random(p.height / 4));
+        }
+        
+        // Track mouse movement for proper interaction
+        aboutImageContainer.addEventListener('mousemove', function(e) {
+            const rect = aboutImageContainer.getBoundingClientRect();
+            p.mouseX = e.clientX - rect.left;
+            p.mouseY = e.clientY - rect.top;
+        });
+        
+        // Make the container background transparent
+        aboutImageContainer.style.backgroundColor = 'transparent';
+    };
+    
+    p.draw = function() {
+        // No clear or partial-clear - keep original behavior
+        
+        // Set a default mouseX/mouseY if not set yet (for initial state)
+        if (!p.mouseX) p.mouseX = p.width / 2;
+        if (!p.mouseY) p.mouseY = p.height / 2;
+        
+        for (let k = 0; k < 30; k++) {
+            // Get color from image, ensuring coordinates are within bounds
+            const getPointColor = (point) => {
+                const x = p.constrain(Math.floor(point.getX()), 0, img2.width - 1);
+                const y = p.constrain(Math.floor(point.getY()), 0, img2.height - 1);
+                return img2.get(x, y);
+            };
+            
+            if (transition) {
+                col_A = img1 ? img1.get(point[0].getX(), point[0].getY()) : p.color(0);
+                col_B = img1 ? img1.get(point[1].getX(), point[1].getY()) : p.color(0);
+                col_C = img1 ? img1.get(point[2].getX(), point[2].getY()) : p.color(0);
+                col_D = img1 ? img1.get(point[3].getX(), point[3].getY()) : p.color(0);
+            } else {
+                col_A = getPointColor(point[0]);
+                col_B = getPointColor(point[1]);
+                col_C = getPointColor(point[2]);
+                col_D = getPointColor(point[3]);
+            }
+            
+            p.stroke(col_C, p.map(p.mouseY, 0, p.height, 255, 150));
+            p.strokeWeight(p.mouseY / 30 || 5); // Default if mouseY is 0
+            
+            if (
+                p.brightness(col_A) - p.brightness(col_B) < 50 &&
+                p.brightness(col_B) - p.brightness(col_C) < 50 &&
+                p.brightness(col_C) - p.brightness(col_D) < 50
+            ) {
+                p.bezier(
+                    point[0].getX(),
+                    point[0].getY(),
+                    point[1].getX(),
+                    point[1].getY(),
+                    point[2].getX(),
+                    point[2].getY(),
+                    point[3].getX(),
+                    point[3].getY()
+                );
+                
+                p.fill(col_C);
+                p.ellipse(
+                    point[0].getX(),
+                    point[0].getY(),
+                    p.brightness(col_A) / 40 || 5,
+                    p.brightness(col_A) / 40 || 5
+                );
+                p.noFill();
+            }
+            
+            point[0].draw(p.round(p.random(p.width)), p.round(p.random(p.height)));
+            point[1].draw(point[0].getX(), point[0].getY());
+            point[2].draw(point[1].getX(), point[1].getY());
+            point[3].draw(point[2].getX(), point[2].getY());
+        }
+    };
+    
+    // Handle window resize and maintain proper aspect ratio
+    p.windowResized = function() {
+        const aboutImageContainer = document.getElementById('about-image-container');
+        const containerWidth = aboutImageContainer.offsetWidth;
+        const containerHeight = containerWidth * (imageRatio || (9/16));
+        p.resizeCanvas(containerWidth, containerHeight);
+        p.background(0); // Maintain black background after resize
+    };
+};
+
+        // Initialize the P5.js sketches when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create the hero visualization
+            new p5(heroSketch, 'hero-container');
+            
+            // Create the about section visualization
+            new p5(aboutSketch, 'about-image-container');
+        });
+    </script>
+</body>
+</html>
