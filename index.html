@@ -17,6 +17,7 @@
             --background-color: #1e272e;
             --card-color: #2d3436;
             --transition: all 0.3s ease;
+            --max-width: 1200px; /* Max width for the centered content */
         }
 
         /* Base Styles */
@@ -37,6 +38,14 @@
             overflow-x: hidden;
         }
 
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            box-sizing: border-box;
+        }
+
         a {
             text-decoration: none;
             color: var(--accent-color);
@@ -44,31 +53,44 @@
         }
 
         a:hover {
-            color: var(--secondary-color);
+            color: rgba(233,93,0,0.76);
         }
 
+      
         /* Header */
-header {
-    padding: 0 2rem; /* Reduced padding */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    width: 100%;
-    top: 0; /* Explicitly set top to 0 */
-    left: 0; /* Explicitly set left to 0 */
-    z-index: 1000;
-    background-color: rgba(30, 39, 46, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    height: 60px;
-}
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: --background-color ;
+            backdrop-filter: blur(5px);
+          border: px solid rgba(255, 255, 255, 0.51);
+                     
+           box-shadow: 0 1px 1px rgba(216,198,19,0.24);
+            height: 60px;
+           border-radius: 8px; 
+           
+        }
+
+        .header-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+          
+          
+        }
 
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent-color);
-          line-height: 60px; 
+            line-height: 60px; 
         }
 
         nav ul {
@@ -110,19 +132,29 @@ header {
             height: 60vh;
             display: flex;
             align-items: center;
-            padding: 0 10%;
             position: relative;
             overflow: hidden;
-          margin-top: 60px;
+            margin-top: 70px; /* Increased from 60px to create space below header */
+            padding-top: 10px; /* Added padding to make space for the top border */
         }
 
         #hero-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 10px; /* Moved down to create space for the top border */
+            left: 50%;
+          background-color: rgba(0,0,0,0.95);
+            transform: translateX(-50%);
+            width: calc(100% - 40px); /* Match section container width accounting for padding */
+            max-width: calc(var(--max-width) - 40px);
+            height: calc(100% - 10px); /* Adjusted height to account for top space */
             z-index: 0;
+            border: px solid rgba(255, 255, 255, 0.51);
+                     
+           box-shadow: 0 2px 4px rgba(216,198,19,0.44);
+            border-radius: 12px; /* Full border radius now that we show all sides */
+            overflow: hidden;
+            box-sizing: border-box;
+          
         }
 
         .hero-content {
@@ -135,8 +167,9 @@ header {
             font-size: 2.5rem;
             margin-bottom: 1rem;
             line-height: 1.2;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 10px rgba(201,192,23,0.78));
         }
+      
 
         .hero p {
             font-size: 1.1rem;
@@ -161,8 +194,9 @@ header {
         }
 
         .btn-primary {
-            background-color: var(--secondary-color);
-            color: white;
+            background-color: transparent;
+            color:; var(--accent-color);
+           border: 2px solid var(--accent-color);
         }
 
         .btn-secondary {
@@ -172,34 +206,41 @@ header {
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.42);
+            transform: translateY(-5px);
+            box-shadow: 0 2px 20px rgba(255,255,255,0.42);
         }
 
         /* About Section */
-    .about {
-    padding: 4rem 10%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start; /* Changed from center to allow natural height */
-    scroll-margin-top: 60px;
-}
+        .about {
+            padding: 4rem 0;
+            scroll-margin-top: 60px;
+        }
+        
+        .section-container {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2.5rem;
+            background-color: rgba(45, 52, 54, 0.4);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
         /* P5.js container for about image */
-   #about-image-container {
-    width: 100%;
-    position: sticky; /* Keep it visible while scrolling */
-    top: 80px; /* Offset from top to account for header */
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    height: auto; /* Will be set by JS to match content height */
-}
+        #about-image-container {
+            width: 100%;
+            position: sticky; /* Keep it visible while scrolling */
+            top: 80px; /* Offset from top to account for header */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            height: auto; /* Will be set by JS to match content height */
+        }
 
         /* Make the p5 canvas responsive */
         #about-image-container canvas {
@@ -219,41 +260,45 @@ header {
             content: '';
             position: absolute;
             bottom: -10px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 60px;
             height: 3px;
             background-color: var(--secondary-color);
         }
 
-       .about-content {
-    position: relative; /* For height measurement */
-}
+        .about-content {
+            position: relative; /* For height measurement */
+        }
 
         .skills {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-top: 2rem;
+          
         }
 
         .skill-tag {
             background-color: var(--card-color);
             padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 0.9rem;
             font-weight: 500;
             transition: var(--transition);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .skill-tag:hover {
             background-color: var(--secondary-color);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+          
         }
 
         /* Portfolio Section with iframe */
         .portfolio {
-            padding: 6rem 10%;
-            background-color: rgba(45, 52, 54, 0.3);
+            padding: 6rem 0;
+            background-color: transparent;
         }
 
         .portfolio-intro {
@@ -271,6 +316,7 @@ header {
             justify-content: center;
             gap: 1rem;
             margin-bottom: 3rem;
+          
         }
 
         .tab {
@@ -279,10 +325,12 @@ header {
             border-radius: 30px;
             cursor: pointer;
             transition: var(--transition);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tab.active, .tab:hover {
             background-color: var(--secondary-color);
+           transform: translateY(-3px);
         }
 
         .portfolio-showcase {
@@ -301,14 +349,18 @@ header {
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+           box-shadow: 0 1px 4px rgba(216,198,19,0.44);
         }
 
         .project-info {
             background-color: var(--card-color);
             padding: 2rem;
-            border-radius: 10px;
+            border-radius: 6px;
             margin-top: 2rem;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+           box-shadow: 0 1px 2px rgba(216,198,19,0.44);
+
         }
 
         .project-info h3 {
@@ -321,18 +373,22 @@ header {
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-top: 1rem;
+          
         }
 
         .project-tech span {
             padding: 0.3rem 0.8rem;
             background-color: rgba(0, 206, 201, 0.2);
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 0.85rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          
         }
+   
 
         /* Contact Section */
         .contact {
-            padding: 6rem 10%;
+            padding: 6rem 0;
         }
 
         .contact-form {
@@ -375,7 +431,7 @@ header {
         /* Footer */
         footer {
             background-color: var(--primary-color);
-            padding: 3rem 10%;
+            padding: 3rem 0;
             text-align: center;
         }
 
@@ -408,19 +464,29 @@ header {
         }
 
         /* Responsive Design */
+        @media (max-width: 1240px) {
+            :root {
+                --max-width: 90%;
+            }
+        }
+
         @media (max-width: 992px) {
-            .about {
-                grid-template-columns: 1fr;
+            .about .container div[style] {
+                grid-template-columns: 1fr !important;
             }
 
             .portfolio-showcase {
                 height: 500px;
             }
+            
+            .section-container {
+                padding: 1.5rem;
+            }
         }
 
         @media (max-width: 768px) {
-            header {
-                padding: 1.5rem;
+            .header-container {
+                padding: 0 1.5rem;
             }
 
             nav ul {
@@ -439,20 +505,12 @@ header {
                 font-size: 1rem;
             }
 
-            .about, .portfolio, .contact {
-                padding: 4rem 5%;
-            }
-
             .portfolio-showcase {
                 height: 400px;
             }
         }
 
         @media (max-width: 576px) {
-            .hero {
-                padding: 0 5%;
-            }
-
             .hero-btns {
                 flex-direction: column;
             }
@@ -481,17 +539,19 @@ header {
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">tkomforty</div>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="mobile-menu">
-            <i class="fas fa-bars"></i>
+        <div class="header-container">
+            <div class="logo">tkomforty</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
 
@@ -500,97 +560,117 @@ header {
         <!-- P5.js container for hero background -->
         <div id="hero-container"></div>
         
-        <div class="hero-content">
-            <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer <br> & Creative Coder</h1>
-            <p>Making interactive experiences.</p>
-            <div class="hero-btns">
-                <a href="#portfolio" class="btn btn-primary">View My Work</a>
-                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer <br> & Creative Coder</h1>
+                <p>Making interactive experiences.</p>
+                <div class="hero-btns">
+                    <a href="#portfolio" class="btn btn-primary">View My Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
     <section class="about" id="about">
-        <div id="about-image-container"></div>
-        <div class="about-content">
-            <h2 class="section-title">About Me</h2>
-            <p>I'm a junior frontend developer with a passion for creating interactive web experiences that use tech to blend art, music and touch.</p>
-            <p>My background in audio, music and cooking has given me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries and pushing unique things out into the world.</p>
-            <p>I use code to make generative art, instruments, and interactive/reactive elements.</p>
-            <div class="skills">
-                <span class="skill-tag">HTML5</span>
-                <span class="skill-tag">CSS3</span>
-                <span class="skill-tag">JavaScript</span>
-                <span class="skill-tag">React</span>
-                <span class="skill-tag">tone.js</span>
-                <span class="skill-tag">p5.js</span>
-                <span class="skill-tag">Three.js</span>
-                <span class="skill-tag">Responsive Design</span>
-                <span class="skill-tag">CSS Animation</span>
-                <span class="skill-tag">Git</span>
+        <div class="container">
+            <div class="section-container">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+                    <div id="about-image-container"></div>
+                    <div class="about-content">
+                        <h2 class="section-title">About Me</h2>
+                        <p>I'm a junior frontend developer with a passion for creating interactive web experiences that use tech to blend art, music and touch.</p>
+                        <p>My background in audio, music and cooking has given me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries and pushing unique things out into the world.</p>
+                        <p>I use code to make generative art, instruments, and interactive/reactive elements.</p>
+                        <div class="skills">
+                            <span class="skill-tag">HTML5</span>
+                            <span class="skill-tag">CSS3</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">tone.js</span>
+                            <span class="skill-tag">p5.js</span>
+                            <span class="skill-tag">Three.js</span>
+                            <span class="skill-tag">Responsive Design</span>
+                            <span class="skill-tag">CSS Animation</span>
+                            <span class="skill-tag">Git</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Portfolio Section -->
     <section class="portfolio" id="portfolio">
-        <div class="portfolio-intro">
-            <h2 class="section-title">Selected Works</h2>
-            <p>made using a combination of three.js, tone.js, p5.js</p>
-        </div>
-        <div class="portfolio-tabs">
-            <div class="tab active" data-project="project1">sonic field</div>
-            <div class="tab" data-project="project2">audio room</div>
-            <div class="tab" data-project="project3">shader waves</div>
-            <div class="tab" data-project="project4">website motion</div>
-        </div>
-        <div class="portfolio-showcase">
-            <iframe id="portfolioFrame" class="portfolio-iframe" src="about:blank" title="Portfolio Showcase"></iframe>
-        </div>
-        <div class="project-info">
-            <h3 id="projectTitle">Interactive Audio Visualizer</h3>
-            <p id="projectDescription">An interactive audio visualizer built with the Web Audio API and Canvas. Upload your own music and watch as the visualizer creates a unique experience based on the audio frequencies.</p>
-            <div class="project-tech">
-                <span>HTML5</span>
-                <span>CSS3</span>
-                <span>JavaScript</span>
-                <span>Web Audio API</span>
-                <span>Canvas</span>
+        <div class="container">
+            <div class="section-container">
+                <div class="portfolio-intro">
+                    <h2 class="section-title" style="text-align: center; display: inline-block;">Selected Works</h2>
+                    <p>made using a combination of three.js, tone.js, p5.js</p>
+                </div>
+                <div class="portfolio-tabs">
+                    <div class="tab active" data-project="project1">sonic field</div>
+                    <div class="tab" data-project="project2">audio room</div>
+                    <div class="tab" data-project="project3">shader waves</div>
+                    <div class="tab" data-project="project4">website motion</div>
+                </div>
+                <div class="portfolio-showcase">
+                    <iframe id="portfolioFrame" class="portfolio-iframe" src="about:blank" title="Portfolio Showcase"></iframe>
+                </div>
+                <div class="project-info">
+                    <h3 id="projectTitle">Interactive Audio Visualizer</h3>
+                    <p id="projectDescription">An interactive audio visualizer built with the Web Audio API and Canvas. Upload your own music and watch as the visualizer creates a unique experience based on the audio frequencies.</p>
+                    <div class="project-tech">
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>JavaScript</span>
+                        <span>Web Audio API</span>
+                        <span>Canvas</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
-        <h2 class="section-title">Get In Touch</h2>
-        <div class="contact-form">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Your name">
+        <div class="container">
+            <div class="section-container">
+                <div style="text-align: center;">
+                    <h2 class="section-title" style="text-align: center; display: inline-block;">Get In Touch</h2>
+                </div>
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Your email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Tell me about your project or any opportunities"></textarea>
+                    </div>
+                    <button class="btn btn-primary">Send Message</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Your email address">
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" placeholder="Tell me about your project or any opportunities"></textarea>
-            </div>
-            <button class="btn btn-primary">Send Message</button>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="social-links">
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-soundcloud"></i></a>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-soundcloud"></i></a>
+            </div>
+            <p class="copyright">© <span id="year">2025</span> Tony Komforty. All rights reserved.</p>
         </div>
-        <p class="copyright">© <span id="year">2025</span> Tony Komforty. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript for portfolio and general site functionality -->
@@ -674,53 +754,54 @@ header {
         });
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Get the target element
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            // Calculate offset to account for fixed header
-            const headerOffset = 60;
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            
-            // Smooth scroll with enhanced behavior
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get the target element
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Calculate offset to account for fixed header
+                    const headerOffset = 60;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    // Smooth scroll with enhanced behavior
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const nav = document.querySelector('nav ul');
+                    nav.style.display = 'none';
+                }
             });
-            
-            // Close mobile menu if open
-            const nav = document.querySelector('nav ul');
-            nav.style.display = 'none';
-        }
-    });
-});
+        });
 
-      const fadeInElements = document.querySelectorAll('.about, .portfolio, .contact');
+        const fadeInElements = document.querySelectorAll('.about, .portfolio, .contact');
 
-// Create an observer
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = 1;
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, {
-    threshold: 0.05
-});
+        // Create an observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.05
+        });
 
-// Apply initial styles and observe elements
-fadeInElements.forEach(element => {
-    element.style.opacity = 0;
-    element.style.transform = 'translateY(20px)';
-    element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(element);
-});
+        // Apply initial styles and observe elements
+        fadeInElements.forEach(element => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(element);
+        });
+        
         // Set the first project as default
         document.querySelector('.tab.active').click();
     </script>
@@ -729,73 +810,240 @@ fadeInElements.forEach(element => {
     <script>
         // Hero visualization sketch
         const heroSketch = function(p) {
-          let points = [];
-          const numPoints = 17;
-          const connectionRadius = 1000;
-          const primaryColor = p.color(67, 23, 216); // Purple
-          const accentColor = p.color(0, 206, 201);  // Teal
+          let pointStructures = []; // Array to hold multiple point structures
+          const numStructures = 2; // Two separate structures as requested
+          let mousePos = {x: 0, y: 0, active: false};
+          
+          class PointStructure {
+            constructor(offsetX = 0, offsetY = 0, hue) {
+              this.points = [];
+              this.centerX = p.width/2 + offsetX;
+              this.centerY = p.height/2 + offsetY;
+              this.targetX = this.centerX;
+              this.targetY = this.centerY;
+              this.followSpeed = p.random(0.08, 0.12); // Faster following for more responsive movement
+              this.connectionRadius = 150;
+              
+              // Create different color schemes for each structure
+              if (hue === 'blue') {
+                this.primaryColor = p.color(67, 23, 216); // Purple
+                this.accentColor = p.color(0, 206, 201);  // Teal
+              } else {
+                this.primaryColor = p.color(191, 162, 76); // Gold
+                this.accentColor = p.color(216, 67, 23);   // Orange-red
+              }
+              this.thirdColor = p.color(255, 255, 255);    // White highlights
+              
+              // Create points for this structure
+              const numPoints = p.floor(p.random(25, 35)); // Many more points
+              for (let i = 0; i < numPoints; i++) {
+                // Position points in a loose cluster
+                const angle = p.random(p.TWO_PI);
+                const radius = p.random(30, 180);
+                const x = this.centerX + radius * p.cos(angle);
+                const y = this.centerY + radius * p.sin(angle);
+                
+                this.points.push({
+                  pos: p.createVector(x, y),
+                  vel: p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5)),
+                  basePos: p.createVector(radius * p.cos(angle), radius * p.sin(angle)), // Relative position
+                  size: p.random(2, 10),
+                  independenceLevel: p.random(0.3, 0.9), // Higher independence
+                  color: p.lerpColor(
+                    p.lerpColor(this.primaryColor, this.accentColor, p.random()),
+                    this.thirdColor, 
+                    p.random() > 0.8 ? p.random(0.3, 0.5) : 0 // Occasionally mix in white
+                  ),
+                  phase: p.random(p.TWO_PI), // Random starting phase for pulsing effect
+                  noiseOffsetX: p.random(1000),
+                  noiseOffsetY: p.random(2000)
+                });
+              }
+            }
+            
+            update(time, mouseX, mouseY, mouseActive) {
+              // Update the structure's target position based on mouse - more immediate response
+              if (mouseActive) {
+                this.targetX = p.lerp(this.targetX, mouseX, this.followSpeed * 1.5);
+                this.targetY = p.lerp(this.targetY, mouseY, this.followSpeed * 1.5);
+              } else {
+                // Smoother drift motion when mouse is inactive
+                const noiseX = p.noise(time * 0.2) * 2 - 1;
+                const noiseY = p.noise(time * 0.2 + 500) * 2 - 1;
+                this.targetX = p.lerp(this.targetX, p.width/2 + 100 * noiseX, 0.01);
+                this.targetY = p.lerp(this.targetY, p.height/2 + 80 * noiseY, 0.01);
+              }
+              
+              // Fast center movement for responsive follow
+              const dx = this.targetX - this.centerX;
+              const dy = this.targetY - this.centerY;
+              this.centerX += dx * this.followSpeed * 1.2;
+              this.centerY += dy * this.followSpeed * 1.2;
+              
+                              // Update all points in this structure
+              for (let point of this.points) {
+                // Calculate the point's target position (relative to structure center)
+                const targetX = this.centerX + point.basePos.x;
+                const targetY = this.centerY + point.basePos.y;
+                
+                // Enhanced independent motion using multiple noise functions
+                // Each point now has its own unique movement pattern
+                const t = time * 0.4 * point.independenceLevel;
+                const noiseX = p.map(p.noise(point.noiseOffsetX + t, time * 0.1), 0, 1, -3, 3);
+                const noiseY = p.map(p.noise(point.noiseOffsetY + t, time * 0.1), 0, 1, -3, 3);
+                
+                // Secondary noise for more complex movement
+                const noise2X = p.map(p.noise(point.noiseOffsetX + 500, t * 0.7), 0, 1, -1.5, 1.5);
+                const noise2Y = p.map(p.noise(point.noiseOffsetY + 500, t * 0.7), 0, 1, -1.5, 1.5);
+                
+                // Apply stronger independent forces
+                point.vel.x += (noiseX + noise2X * 0.5) * 0.2 * point.independenceLevel;
+                point.vel.y += (noiseY + noise2Y * 0.5) * 0.2 * point.independenceLevel;
+                
+                // Add force toward target position - weak tether that varies by point
+                const toTarget = p.createVector(targetX - point.pos.x, targetY - point.pos.y);
+                // More independent points have weaker tethers
+                const tetherStrength = 0.02 * (1 - point.independenceLevel * 0.7);
+                toTarget.mult(tetherStrength);
+                point.vel.add(toTarget);
+                
+                // Occasionally add random impulses for more chaotic movement
+                if (p.random() < 0.03 * point.independenceLevel) {
+                  point.vel.x += p.random(-1, 1) * point.independenceLevel;
+                  point.vel.y += p.random(-1, 1) * point.independenceLevel;
+                }
+                
+                // Higher velocity limit for more varied speeds and independent movement
+                point.vel.limit(2 + point.independenceLevel * 2.5);
+                
+                // Update position
+                point.pos.add(point.vel);
+                
+                // Add damping to velocity - less damping for more independent points
+                point.vel.mult(0.92 + 0.04 * point.independenceLevel);
+                
+                // Ensure points stay within canvas
+                if (point.pos.x < 0) {
+                  point.pos.x = 0;
+                  point.vel.x *= -0.7;
+                } else if (point.pos.x > p.width) {
+                  point.pos.x = p.width;
+                  point.vel.x *= -0.7;
+                }
+                
+                if (point.pos.y < 0) {
+                  point.pos.y = 0;
+                  point.vel.y *= -0.7;
+                } else if (point.pos.y > p.height) {
+                  point.pos.y = p.height;
+                  point.vel.y *= -0.7;
+                }
+              }
+            }
+            
+            draw(time) {
+              // First, draw connecting lines between points
+              for (let i = 0; i < this.points.length; i++) {
+                for (let j = i + 1; j < this.points.length; j++) {
+                  const p1 = this.points[i].pos;
+                  const p2 = this.points[j].pos;
+                  const d = p.dist(p1.x, p1.y, p2.x, p2.y);
+                  
+                  if (d < this.connectionRadius) {
+                    // The closer the points, the more opaque the line
+                    const alpha = p.map(d, 0, this.connectionRadius, 100, 0);
+                    // Line color based on the points it connects
+                    const lineColor = p.lerpColor(this.points[i].color, this.points[j].color, 0.5);
+                    p.stroke(lineColor.levels[0], lineColor.levels[1], lineColor.levels[2], alpha * 0.8);
+                    p.strokeWeight(p.map(d, 0, this.connectionRadius, 1.5, 0.3)); // Thicker lines for closer points
+                    p.line(p1.x, p1.y, p2.x, p2.y);
+                  }
+                }
+              }
+              
+              // Then draw the points with glow effect
+              for (let point of this.points) {
+                // Calculate pulsing size
+                const pulsingSize = point.size * (0.8 + 0.3 * p.sin(time * 1.5 + point.phase));
+                
+                // Draw glow effect
+                p.noStroke();
+                const glowColor = p.color(point.color);
+                for (let i = 3; i > 0; i--) {
+                  glowColor.setAlpha(40 / i);
+                  p.fill(glowColor);
+                  p.circle(point.pos.x, point.pos.y, pulsingSize * (i * 0.7));
+                }
+                
+                // Draw point
+                p.fill(point.color);
+                p.circle(point.pos.x, point.pos.y, pulsingSize);
+              }
+            }
+          }
           
           p.setup = function() {
             // Canvas will be created to match the hero container size
             const heroContainer = document.getElementById('hero-container');
             p.createCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
             
-            // Initialize points randomly across the canvas
-            for (let i = 0; i < numPoints; i++) {
-              points.push({
-                pos: p.createVector(p.random(p.width), p.random(p.height)),
-                vel: p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5)),
-                size: p.random(1, 8),
-                color: p.lerpColor(primaryColor, accentColor, p.random())
-              });
-            }
+            // Create two structures with significantly different positions and colors
+            pointStructures.push(new PointStructure(-p.width/5, -p.height/6, 'blue'));
+            pointStructures.push(new PointStructure(p.width/5, p.height/6, 'gold'));
+            
+            // Add mouse interaction
+            p.canvas.addEventListener('mousemove', (e) => {
+              const rect = p.canvas.getBoundingClientRect();
+              mousePos.x = e.clientX - rect.left;
+              mousePos.y = e.clientY - rect.top;
+              mousePos.active = true;
+              
+              // Reset mouse inactive timer
+              if (p.mouseInactiveTimeout) {
+                clearTimeout(p.mouseInactiveTimeout);
+              }
+              
+              // Set timeout to mark mouse as inactive after 1 second (faster transition to auto-movement)
+              p.mouseInactiveTimeout = setTimeout(() => {
+                mousePos.active = false;
+              }, 1000);
+            });
+            
+            // Initialize mouse position to center to avoid jarring initial movement
+            mousePos.x = p.width/2;
+            mousePos.y = p.height/2;
+            
+            p.canvas.addEventListener('mouseleave', () => {
+              mousePos.active = false;
+            });
           };
         
           p.draw = function() {
             p.clear();
+            p.background(0, 0, 0, 2); // Very subtle fade for trailing effect
             
-            // Draw connections between points
-            p.stroke(255, 10);
-            p.background(0,0,0,1);
+            // Draw border manually to ensure it shows correctly
+            p.stroke(255, 25);
+            p.strokeWeight(1);
+            p.noFill();
+            p.rect(0, 0, p.width, p.height);
             
-            for (let i = 0; i < points.length; i++) {
-              for (let j = i + 1; j < points.length; j++) {
-                const p1 = points[i].pos;
-                const p2 = points[j].pos;
-                const d = p.dist(p1.x, p1.y, p2.x, p2.y);
-                
-                if (d < connectionRadius) {
-                  // The closer the points, the more opaque the line
-                  const alpha = p.map(d, 0, connectionRadius, 100, 0);
-                  p.stroke(255, alpha);
-                  p.line(p1.x, p1.y, p2.x, p2.y);
-                 // p.strokeWeight(alpha/16);
-                }
-              }
+            const time = p.millis() * 0.001; // Time in seconds
+            
+            // Update and draw all structures
+            for (let structure of pointStructures) {
+              structure.update(time, mousePos.x, mousePos.y, mousePos.active);
+              structure.draw(time);
             }
             
-            // Update and draw points
-            for (let point of points) {
-              // Update position with velocity
-              point.pos.add(point.vel);
-              
-              // Bounce off edges
-              if (point.pos.x < 0 || point.pos.x > p.width) point.vel.x *= -1;
-              if (point.pos.y < 0 || point.pos.y > p.height) point.vel.y *= -1;
-              
-              // Draw point
-              p.noStroke();
-              p.fill(point.color);
-              p.circle(point.pos.x, point.pos.y, point.size);
-            }
-            
-            // Add gradient overlay
-            const gradientHeight = p.height / 2;
-            for (let y = 0; y < gradientHeight; y++) {
-              const alpha = p.map(y, 0, gradientHeight, 5, 0);
+            // Add subtle radial gradient overlay
+            const gradientCenter = p.createVector(p.width/2, p.height/2);
+            const radius = p.max(p.width, p.height) * 0.7;
+            for (let r = radius; r > 0; r -= 25) { // Reduced density of circles even more
+              const alpha = p.map(r, 0, radius, 12, 0) * (0.8 + 0.2 * p.sin(time * 0.1 + r * 0.005));
               p.stroke(30, 39, 46, alpha);
-              p.line(0, y, p.width, y);
-              p.line(0, p.height - y, p.width, p.height - y);
+              p.noFill();
+              p.circle(gradientCenter.x, gradientCenter.y, r * 2);
             }
           };
           
@@ -804,162 +1052,157 @@ fadeInElements.forEach(element => {
             const heroContainer = document.getElementById('hero-container');
             p.resizeCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
             
-            // Redistribute points on resize
-            for (let point of points) {
-              if (point.pos.x > p.width) point.pos.x = p.random(p.width);
-              if (point.pos.y > p.height) point.pos.y = p.random(p.height);
-            }
+            // Recalculate positions for all structures based on new dimensions
+            pointStructures[0].targetX = p.width/2 - p.width/4;
+            pointStructures[0].targetY = p.height/2 - p.height/6;
+            pointStructures[1].targetX = p.width/2 + p.width/4;
+            pointStructures[1].targetY = p.height/2 + p.height/6;
           };
         };
         
-        // About section sketch using your provided code
- // About section sketch - direct adaptation of original code
-// About section sketch - direct adaptation with fixes for centering and transparency
-// Alternative approach - full black background with custom fadeout
-// About section sketch - with semi-transparent persistent background
-// About section sketch - with self-animated behavior (no mouse dependency)
-// About section sketch - with dot-based rendering instead of beziers
-const aboutSketch = function(p) {
-    let img1;
-    let img2;
-    let time = 0; // Time variable for animation
-    let noiseScale = 0.0005; // Scale for noise (lower = smoother)
-    let imageRatio = 0; // To store the aspect ratio of the loaded image
-    
-    // Points for sampling the image
-    class Point {
-        x;
-        y;
-        size;
-        color;
-        seed;
-        
-        constructor() {
-            this.x = p.random(p.width);
-            this.y = p.random(p.height);
-            this.size = p.random(2, 16); // Varying dot sizes
-            this.color = p.color(0);
-            this.seed = p.random(1000); // Random seed for variation
-        }
-        
-        update() {
-            // Use Perlin noise for organic movement
-            const nx = p.noise(this.seed, time * 0.3);
-            const ny = p.noise(this.seed + 500, time * 0.3);
+        // About section sketch
+        const aboutSketch = function(p) {
+            let img1;
+            let img2;
+            let time = 0; // Time variable for animation
+            let noiseScale = 0.0005; // Scale for noise (lower = smoother)
+            let imageRatio = 0; // To store the aspect ratio of the loaded image
             
-            // Move points across the canvas
-            this.x = p.map(nx, 0, 1, 0, p.width);
-            this.y = p.map(ny, 0, 1, 0, p.height);
-            
-            // Sample color from image at current position
-            this.updateColor();
-            
-            // Size based on brightness and a random factor
-            const brightness = p.brightness(this.color);
-            this.size = p.map(brightness, 0, 255, 1, 8) * p.random(0.48, 1.50);
-        }
-        
-        updateColor() {
-            // Get color from image at current position
-            if (img2) {
-                const x = p.constrain(Math.floor(this.x / p.width * img2.width), 0, img2.width - 1);
-                const y = p.constrain(Math.floor(this.y / p.height * img2.height), 0, img2.height - 1);
-                this.color = img2.get(x, y);
-            }
-        }
-        
-        display() {
-          //  p.noStroke();
-            p.fill(this.color);
-            p.ellipse(this.x, this.y, this.size, this.size);
-        }
-    }
-    
-    // Create array of points
-    const numPoints = 5000; // More points for better image representation
-    let points = [];
-    
-    p.preload = function() {
-        // Load me3.png as requested
-        img2 = p.loadImage('me3.png', 
-            // Success callback - store the aspect ratio when image loads
-            function() {
-                imageRatio = img2.height / img2.width;
-            },
-            // Error callback - create placeholder if image fails to load
-            function() {
-                console.log('Failed to load me3.png, creating placeholder');
-                img2 = p.createImage(854, 480);
-                img2.loadPixels();
-                for (let i = 0; i < img2.width; i++) {
-                    for (let j = 0; j < img2.height; j++) {
-                        // Create a gradient with the site's colors
-                        let r = p.map(i, 0, img2.width, 30, 67);
-                        let g = p.map(j, 0, img2.height, 39, 23);
-                        let b = p.map(i+j, 0, img2.width+img2.height, 46, 216);
-                        img2.set(i, j, p.color(r, g, b, 25)); // Fully opaque
+            // Points for sampling the image
+            class Point {
+                x;
+                y;
+                size;
+                color;
+                seed;
+                
+                constructor() {
+                    this.x = p.random(p.width);
+                    this.y = p.random(p.height);
+                    this.size = p.random(2, 16); // Varying dot sizes
+                    this.color = p.color(0);
+                    this.seed = p.random(1000); // Random seed for variation
+                }
+                
+                update() {
+                    // Use Perlin noise for organic movement
+                    const nx = p.noise(this.seed, time * 0.3);
+                    const ny = p.noise(this.seed + 500, time * 0.3);
+                    
+                    // Move points across the canvas
+                    this.x = p.map(nx, 0, 1, 0, p.width);
+                    this.y = p.map(ny, 0, 1, 0, p.height);
+                    
+                    // Sample color from image at current position
+                    this.updateColor();
+                    
+                    // Size based on brightness and a random factor
+                    const brightness = p.brightness(this.color);
+                    this.size = p.map(brightness, 0, 255, 1, 8) * p.random(0.48, 1.50);
+                }
+                
+                updateColor() {
+                    // Get color from image at current position
+                    if (img2) {
+                        const x = p.constrain(Math.floor(this.x / p.width * img2.width), 0, img2.width - 1);
+                        const y = p.constrain(Math.floor(this.y / p.height * img2.height), 0, img2.height - 1);
+                        this.color = img2.get(x, y);
                     }
                 }
-                img2.updatePixels();
-                imageRatio = img2.height / img2.width;
+                
+                display() {
+                  //  p.noStroke();
+                    p.fill(this.color);
+                    p.ellipse(this.x, this.y, this.size, this.size);
+                }
             }
-        );
-    };
-    
-    p.setup = function() {
-        const aboutImageContainer = document.getElementById('about-image-container');
-        const containerWidth = aboutImageContainer.offsetWidth;
-        // Calculate height based on container width and image ratio, or default to 16:9
-        const containerHeight = containerWidth * (imageRatio || (9/16));
+            
+            // Create array of points
+            const numPoints = 5000; // More points for better image representation
+            let points = [];
+            
+            p.preload = function() {
+                // Load me3.png as requested
+                img2 = p.loadImage('me3.png', 
+                    // Success callback - store the aspect ratio when image loads
+                    function() {
+                        imageRatio = img2.height / img2.width;
+                    },
+                    // Error callback - create placeholder if image fails to load
+                    function() {
+                        console.log('Failed to load me3.png, creating placeholder');
+                        img2 = p.createImage(854, 480);
+                        img2.loadPixels();
+                        for (let i = 0; i < img2.width; i++) {
+                            for (let j = 0; j < img2.height; j++) {
+                                // Create a gradient with the site's colors
+                                let r = p.map(i, 0, img2.width, 30, 67);
+                                let g = p.map(j, 0, img2.height, 39, 23);
+                                let b = p.map(i+j, 0, img2.width+img2.height, 46, 216);
+                                img2.set(i, j, p.color(r, g, b, 25)); // Fully opaque
+                            }
+                        }
+                        img2.updatePixels();
+                        imageRatio = img2.height / img2.width;
+                    }
+                );
+            };
+            
+            p.setup = function() {
+                const aboutImageContainer = document.getElementById('about-image-container');
+                const containerWidth = aboutImageContainer.offsetWidth;
+                // Calculate height based on container width and image ratio, or default to 16:9
+                const containerHeight = containerWidth * (imageRatio || (9/16));
+                
+                p.createCanvas(containerWidth, containerHeight);
+                
+                // Initialize with a dark background
+                p.background(30, 39, 46,1);
+                
+                // Create points
+                for (let i = 0; i < numPoints; i++) {
+                    points.push(new Point());
+                }
+            };
+            
+            p.draw = function() {
+                // Update time for animation
+                time += 0.02;
+                
+                // Semi-transparent background for trail effect
+                p.fill(30, 39, 46, 25);
+                p.noStroke();
+                p.rect(0, 0, p.width, p.height);
+                
+                // Update and display points
+                for (let i = 0; i < points.length; i+=1) {
+                    // Only update a subset of points each frame for smoother performance
+                    if (i % 10 === p.floor(time * 10) % 10) {
+                        points[i].update()
+                    }
+                    points[i].display();
+                }
+            };
+            
+            // Handle window resize and maintain proper aspect ratio
+            p.windowResized = function() {
+                const aboutImageContainer = document.getElementById('about-image-container');
+                const containerWidth = aboutImageContainer.offsetWidth;
+                const containerHeight = containerWidth * (imageRatio || (9/16));
+                p.resizeCanvas(containerWidth, containerHeight);
+                
+                // Recalculate point positions after resize
+                for (let point of points) {
+                    point.x = p.random(p.width);
+                    point.y = p.random(p.height);
+                    point.updateColor();
+                }
+                
+                // Re-apply initial background after resize
+                p.background(30, 39, 46);
+            };
+        };
         
-        p.createCanvas(containerWidth, containerHeight);
-        
-        // Initialize with a dark background
-        p.background(30, 39, 46,1);
-        
-        // Create points
-        for (let i = 0; i < numPoints; i++) {
-            points.push(new Point());
-        }
-    };
-    
-    p.draw = function() {
-        // Update time for animation
-        time += 0.02;
-        
-        // Semi-transparent background for trail effect
-        p.fill(30, 39, 46, 25);
-        p.noStroke();
-        p.rect(0, 0, p.width, p.height);
-        
-        // Update and display points
-        for (let i = 0; i < points.length; i+=1) {
-            // Only update a subset of points each frame for smoother performance
-            if (i % 10 === p.floor(time * 10) % 10) {
-                points[i].update()
-            }
-            points[i].display();
-        }
-    };
-    
-    // Handle window resize and maintain proper aspect ratio
-    p.windowResized = function() {
-        const aboutImageContainer = document.getElementById('about-image-container');
-        const containerWidth = aboutImageContainer.offsetWidth;
-        const containerHeight = containerWidth * (imageRatio || (9/16));
-        p.resizeCanvas(containerWidth, containerHeight);
-        
-        // Recalculate point positions after resize
-        for (let point of points) {
-            point.x = p.random(p.width);
-            point.y = p.random(p.height);
-            point.updateColor();
-        }
-        
-        // Re-apply initial background after resize
-        p.background(30, 39, 46);
-    };
-};
         // Initialize the P5.js sketches when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Create the hero visualization
