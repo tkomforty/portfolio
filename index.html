@@ -816,36 +816,67 @@ fadeInElements.forEach(element => {
 // About section sketch - direct adaptation with fixes for centering and transparency
 // Alternative approach - full black background with custom fadeout
 // About section sketch - with semi-transparent persistent background
+// About section sketch - with self-animated behavior (no mouse dependency)
+// About section sketch - with dot-based rendering instead of beziers
 const aboutSketch = function(p) {
     let img1;
     let img2;
-    let col_A = 0;
-    let col_B = 0;
-    let col_C = 0;
-    let col_D = 0;
-    let transition = false;
+    let time = 0; // Time variable for animation
+    let noiseScale = 0.0005; // Scale for noise (lower = smoother)
     let imageRatio = 0; // To store the aspect ratio of the loaded image
     
+    // Points for sampling the image
     class Point {
         x;
         y;
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
+        size;
+        color;
+        seed;
+        
+        constructor() {
+            this.x = p.random(p.width);
+            this.y = p.random(p.height);
+            this.size = p.random(2, 16); // Varying dot sizes
+            this.color = p.color(0);
+            this.seed = p.random(1000); // Random seed for variation
         }
-        getX() {
-            return this.x;
+        
+        update() {
+            // Use Perlin noise for organic movement
+            const nx = p.noise(this.seed, time * 0.3);
+            const ny = p.noise(this.seed + 500, time * 0.3);
+            
+            // Move points across the canvas
+            this.x = p.map(nx, 0, 1, 0, p.width);
+            this.y = p.map(ny, 0, 1, 0, p.height);
+            
+            // Sample color from image at current position
+            this.updateColor();
+            
+            // Size based on brightness and a random factor
+            const brightness = p.brightness(this.color);
+            this.size = p.map(brightness, 0, 255, 1, 8) * p.random(0.48, 1.50);
         }
-        getY() {
-            return this.y;
+        
+        updateColor() {
+            // Get color from image at current position
+            if (img2) {
+                const x = p.constrain(Math.floor(this.x / p.width * img2.width), 0, img2.width - 1);
+                const y = p.constrain(Math.floor(this.y / p.height * img2.height), 0, img2.height - 1);
+                this.color = img2.get(x, y);
+            }
         }
-        draw(last_x, last_y) {
-            this.x = last_x + p.random(-p.mouseX / 10, p.mouseX / 10);
-            this.y = last_y + p.random(-p.mouseX / 10, p.mouseX / 10);
+        
+        display() {
+          //  p.noStroke();
+            p.fill(this.color);
+            p.ellipse(this.x, this.y, this.size, this.size);
         }
     }
     
-    let point = new Array(4);
+    // Create array of points
+    const numPoints = 5000; // More points for better image representation
+    let points = [];
     
     p.preload = function() {
         // Load me3.png as requested
@@ -865,7 +896,7 @@ const aboutSketch = function(p) {
                         let r = p.map(i, 0, img2.width, 30, 67);
                         let g = p.map(j, 0, img2.height, 39, 23);
                         let b = p.map(i+j, 0, img2.width+img2.height, 46, 216);
-                        img2.set(i, j, p.color(r, g, b, 255)); // Fully opaque
+                        img2.set(i, j, p.color(r, g, b, 25)); // Fully opaque
                     }
                 }
                 img2.updatePixels();
@@ -882,89 +913,31 @@ const aboutSketch = function(p) {
         
         p.createCanvas(containerWidth, containerHeight);
         
-        // Initialize with a semi-transparent background instead of clear black
-        p.background(30, 39, 46, 10); // Very transparent background color
+        // Initialize with a dark background
+        p.background(30, 39, 46,1);
         
-        p.noFill();
-        p.rectMode(p.CENTER);
-        
-        for (let i = 0; i < 4; i++) {
-            point[i] = new Point(p.random(p.width / 4), p.random(p.height / 4));
+        // Create points
+        for (let i = 0; i < numPoints; i++) {
+            points.push(new Point());
         }
-        
-        // Track mouse movement for proper interaction
-        aboutImageContainer.addEventListener('mousemove', function(e) {
-            const rect = aboutImageContainer.getBoundingClientRect();
-            p.mouseX = e.clientX - rect.left;
-            p.mouseY = e.clientY - rect.top;
-        });
     };
     
     p.draw = function() {
-        // Apply a semi-transparent overlay to create "fade" effect
-        // instead of clearing everything with clear()
-        p.fill(30, 39, 46, 5); // Very transparent background color
+        // Update time for animation
+        time += 0.02;
+        
+        // Semi-transparent background for trail effect
+        p.fill(30, 39, 46, 25);
         p.noStroke();
-        p.rect(p.width/2, p.height/2, p.width, p.height);
-        p.noFill();
+        p.rect(0, 0, p.width, p.height);
         
-        // Set a default mouseX/mouseY if not set yet (for initial state)
-        if (!p.mouseX) p.mouseX = p.width / 2;
-        if (!p.mouseY) p.mouseY = p.height / 2;
-        
-        for (let k = 0; k < 30; k++) {
-            // Get color from image, ensuring coordinates are within bounds
-            const getPointColor = (point) => {
-                const x = p.constrain(Math.floor(point.getX()), 0, img2.width - 1);
-                const y = p.constrain(Math.floor(point.getY()), 0, img2.height - 1);
-                return img2.get(x, y);
-            };
-            
-            if (transition) {
-                col_A = img1 ? img1.get(point[0].getX(), point[0].getY()) : p.color(0, 0, 0, 0);
-                col_B = img1 ? img1.get(point[1].getX(), point[1].getY()) : p.color(0, 0, 0, 0);
-                col_C = img1 ? img1.get(point[2].getX(), point[2].getY()) : p.color(0, 0, 0, 0);
-                col_D = img1 ? img1.get(point[3].getX(), point[3].getY()) : p.color(0, 0, 0, 0);
-            } else {
-                col_A = getPointColor(point[0]);
-                col_B = getPointColor(point[1]);
-                col_C = getPointColor(point[2]);
-                col_D = getPointColor(point[3]);
+        // Update and display points
+        for (let i = 0; i < points.length; i+=1) {
+            // Only update a subset of points each frame for smoother performance
+            if (i % 10 === p.floor(time * 10) % 10) {
+                points[i].update()
             }
-            
-            p.stroke(col_C, p.map(p.mouseY, 0, p.height, 255, 150));
-            p.strokeWeight(p.mouseY / 30 || 5); // Default if mouseY is 0
-            
-            if (
-                p.brightness(col_A) - p.brightness(col_B) < 50 &&
-                p.brightness(col_B) - p.brightness(col_C) < 50 &&
-                p.brightness(col_C) - p.brightness(col_D) < 50
-            ) {
-                p.bezier(
-                    point[0].getX(),
-                    point[0].getY(),
-                    point[1].getX(),
-                    point[1].getY(),
-                    point[2].getX(),
-                    point[2].getY(),
-                    point[3].getX(),
-                    point[3].getY()
-                );
-                
-                p.fill(col_C);
-                p.ellipse(
-                    point[0].getX(),
-                    point[0].getY(),
-                    p.brightness(col_A) / 40 || 5,
-                    p.brightness(col_A) / 40 || 5
-                );
-                p.noFill();
-            }
-            
-            point[0].draw(p.round(p.random(p.width)), p.round(p.random(p.height)));
-            point[1].draw(point[0].getX(), point[0].getY());
-            point[2].draw(point[1].getX(), point[1].getY());
-            point[3].draw(point[2].getX(), point[2].getY());
+            points[i].display();
         }
     };
     
@@ -974,11 +947,18 @@ const aboutSketch = function(p) {
         const containerWidth = aboutImageContainer.offsetWidth;
         const containerHeight = containerWidth * (imageRatio || (9/16));
         p.resizeCanvas(containerWidth, containerHeight);
+        
+        // Recalculate point positions after resize
+        for (let point of points) {
+            point.x = p.random(p.width);
+            point.y = p.random(p.height);
+            point.updateColor();
+        }
+        
         // Re-apply initial background after resize
-        p.background(30, 39, 46, 10);
+        p.background(30, 39, 46);
     };
 };
-
         // Initialize the P5.js sketches when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Create the hero visualization
