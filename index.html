@@ -501,8 +501,8 @@ header {
         <div id="hero-container"></div>
         
         <div class="hero-content">
-            <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer & Creative Coder</h1>
-            <p>I make interactive experiences</p>
+            <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer <br> & Creative Coder</h1>
+            <p>Making interactive experiences.</p>
             <div class="hero-btns">
                 <a href="#portfolio" class="btn btn-primary">View My Work</a>
                 <a href="#contact" class="btn btn-secondary">Get In Touch</a>
@@ -756,6 +756,7 @@ fadeInElements.forEach(element => {
             
             // Draw connections between points
             p.stroke(255, 10);
+            p.background(0,0,0,1);
             
             for (let i = 0; i < points.length; i++) {
               for (let j = i + 1; j < points.length; j++) {
@@ -765,7 +766,7 @@ fadeInElements.forEach(element => {
                 
                 if (d < connectionRadius) {
                   // The closer the points, the more opaque the line
-                  const alpha = p.map(d, 0, connectionRadius, 150, 0);
+                  const alpha = p.map(d, 0, connectionRadius, 100, 0);
                   p.stroke(255, alpha);
                   p.line(p1.x, p1.y, p2.x, p2.y);
                  // p.strokeWeight(alpha/16);
