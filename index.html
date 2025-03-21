@@ -11,8 +11,8 @@
         /* Variables */
         :root {
             --primary-color: #2d3436;
-            --secondary-color: #4317D8;
-            --accent-color: #00cec9;
+            --secondary-color: #BFA24C;
+            --accent-color: #0081CE;
             --text-color: #dfe6e9;
             --background-color: #1e272e;
             --card-color: #2d3436;
@@ -24,6 +24,9 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+         html {
+            scroll-behavior: smooth; /* Makes all scrolling smooth */
         }
 
         body {
@@ -45,23 +48,27 @@
         }
 
         /* Header */
-        header {
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-            background-color: rgba(30, 39, 46, 0.9);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
+header {
+    padding: 0 2rem; /* Reduced padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0; /* Explicitly set top to 0 */
+    left: 0; /* Explicitly set left to 0 */
+    z-index: 1000;
+    background-color: rgba(30, 39, 46, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    height: 60px;
+}
 
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent-color);
+          line-height: 60px; 
         }
 
         nav ul {
@@ -100,12 +107,13 @@
 
         /* Hero Section */
         .hero {
-            height: 50vh;
+            height: 60vh;
             display: flex;
             align-items: center;
             padding: 0 10%;
             position: relative;
             overflow: hidden;
+          margin-top: 60px;
         }
 
         #hero-container {
@@ -169,25 +177,29 @@
         }
 
         /* About Section */
-        .about {
-            padding: 4rem 10%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
+    .about {
+    padding: 4rem 10%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start; /* Changed from center to allow natural height */
+    scroll-margin-top: 60px;
+}
 
         /* P5.js container for about image */
-        #about-image-container {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+   #about-image-container {
+    width: 100%;
+    position: sticky; /* Keep it visible while scrolling */
+    top: 80px; /* Offset from top to account for header */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    height: auto; /* Will be set by JS to match content height */
+}
 
         /* Make the p5 canvas responsive */
         #about-image-container canvas {
@@ -213,9 +225,9 @@
             background-color: var(--secondary-color);
         }
 
-        .about-content p {
-            margin-bottom: 1.5rem;
-        }
+       .about-content {
+    position: relative; /* For height measurement */
+}
 
         .skills {
             display: flex;
@@ -661,18 +673,54 @@
             nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
         });
 
-        
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-                // Close mobile menu if open
-                nav.style.display = 'none';
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Get the target element
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+            // Calculate offset to account for fixed header
+            const headerOffset = 60;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+            // Smooth scroll with enhanced behavior
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
             });
-        });
+            
+            // Close mobile menu if open
+            const nav = document.querySelector('nav ul');
+            nav.style.display = 'none';
+        }
+    });
+});
 
+      const fadeInElements = document.querySelectorAll('.about, .portfolio, .contact');
+
+// Create an observer
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, {
+    threshold: 0.05
+});
+
+// Apply initial styles and observe elements
+fadeInElements.forEach(element => {
+    element.style.opacity = 0;
+    element.style.transform = 'translateY(20px)';
+    element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    observer.observe(element);
+});
         // Set the first project as default
         document.querySelector('.tab.active').click();
     </script>
@@ -682,8 +730,8 @@
         // Hero visualization sketch
         const heroSketch = function(p) {
           let points = [];
-          const numPoints = 50;
-          const connectionRadius = 150;
+          const numPoints = 17;
+          const connectionRadius = 1000;
           const primaryColor = p.color(67, 23, 216); // Purple
           const accentColor = p.color(0, 206, 201);  // Teal
           
@@ -697,7 +745,7 @@
               points.push({
                 pos: p.createVector(p.random(p.width), p.random(p.height)),
                 vel: p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5)),
-                size: p.random(3, 8),
+                size: p.random(1, 8),
                 color: p.lerpColor(primaryColor, accentColor, p.random())
               });
             }
@@ -707,7 +755,7 @@
             p.clear();
             
             // Draw connections between points
-            p.stroke(255, 30);
+            p.stroke(255, 10);
             
             for (let i = 0; i < points.length; i++) {
               for (let j = i + 1; j < points.length; j++) {
@@ -717,7 +765,7 @@
                 
                 if (d < connectionRadius) {
                   // The closer the points, the more opaque the line
-                  const alpha = p.map(d, 0, connectionRadius, 100, 0);
+                  const alpha = p.map(d, 0, connectionRadius, 150, 0);
                   p.stroke(255, alpha);
                   p.line(p1.x, p1.y, p2.x, p2.y);
                  // p.strokeWeight(alpha/16);
@@ -743,7 +791,7 @@
             // Add gradient overlay
             const gradientHeight = p.height / 2;
             for (let y = 0; y < gradientHeight; y++) {
-              const alpha = p.map(y, 0, gradientHeight, 50, 0);
+              const alpha = p.map(y, 0, gradientHeight, 5, 0);
               p.stroke(30, 39, 46, alpha);
               p.line(0, y, p.width, y);
               p.line(0, p.height - y, p.width, p.height - y);
@@ -767,6 +815,7 @@
  // About section sketch - direct adaptation of original code
 // About section sketch - direct adaptation with fixes for centering and transparency
 // Alternative approach - full black background with custom fadeout
+// About section sketch - with semi-transparent persistent background
 const aboutSketch = function(p) {
     let img1;
     let img2;
@@ -816,7 +865,7 @@ const aboutSketch = function(p) {
                         let r = p.map(i, 0, img2.width, 30, 67);
                         let g = p.map(j, 0, img2.height, 39, 23);
                         let b = p.map(i+j, 0, img2.width+img2.height, 46, 216);
-                        img2.set(i, j, p.color(r, g, b, 255));
+                        img2.set(i, j, p.color(r, g, b, 255)); // Fully opaque
                     }
                 }
                 img2.updatePixels();
@@ -828,12 +877,14 @@ const aboutSketch = function(p) {
     p.setup = function() {
         const aboutImageContainer = document.getElementById('about-image-container');
         const containerWidth = aboutImageContainer.offsetWidth;
+        // Calculate height based on container width and image ratio, or default to 16:9
         const containerHeight = containerWidth * (imageRatio || (9/16));
         
         p.createCanvas(containerWidth, containerHeight);
         
-        // Just use black background as in original sketch
-        p.background(0);
+        // Initialize with a semi-transparent background instead of clear black
+        p.background(30, 39, 46, 10); // Very transparent background color
+        
         p.noFill();
         p.rectMode(p.CENTER);
         
@@ -847,13 +898,15 @@ const aboutSketch = function(p) {
             p.mouseX = e.clientX - rect.left;
             p.mouseY = e.clientY - rect.top;
         });
-        
-        // Make the container background transparent
-        aboutImageContainer.style.backgroundColor = 'transparent';
     };
     
     p.draw = function() {
-        // No clear or partial-clear - keep original behavior
+        // Apply a semi-transparent overlay to create "fade" effect
+        // instead of clearing everything with clear()
+        p.fill(30, 39, 46, 5); // Very transparent background color
+        p.noStroke();
+        p.rect(p.width/2, p.height/2, p.width, p.height);
+        p.noFill();
         
         // Set a default mouseX/mouseY if not set yet (for initial state)
         if (!p.mouseX) p.mouseX = p.width / 2;
@@ -868,10 +921,10 @@ const aboutSketch = function(p) {
             };
             
             if (transition) {
-                col_A = img1 ? img1.get(point[0].getX(), point[0].getY()) : p.color(0);
-                col_B = img1 ? img1.get(point[1].getX(), point[1].getY()) : p.color(0);
-                col_C = img1 ? img1.get(point[2].getX(), point[2].getY()) : p.color(0);
-                col_D = img1 ? img1.get(point[3].getX(), point[3].getY()) : p.color(0);
+                col_A = img1 ? img1.get(point[0].getX(), point[0].getY()) : p.color(0, 0, 0, 0);
+                col_B = img1 ? img1.get(point[1].getX(), point[1].getY()) : p.color(0, 0, 0, 0);
+                col_C = img1 ? img1.get(point[2].getX(), point[2].getY()) : p.color(0, 0, 0, 0);
+                col_D = img1 ? img1.get(point[3].getX(), point[3].getY()) : p.color(0, 0, 0, 0);
             } else {
                 col_A = getPointColor(point[0]);
                 col_B = getPointColor(point[1]);
@@ -921,7 +974,8 @@ const aboutSketch = function(p) {
         const containerWidth = aboutImageContainer.offsetWidth;
         const containerHeight = containerWidth * (imageRatio || (9/16));
         p.resizeCanvas(containerWidth, containerHeight);
-        p.background(0); // Maintain black background after resize
+        // Re-apply initial background after resize
+        p.background(30, 39, 46, 10);
     };
 };
 
