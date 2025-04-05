@@ -101,7 +101,7 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black */
+            background-color: rgba(0, 0, 0, 0.15); /* Semi-transparent black */
             backdrop-filter: blur(10px); /* Stronger blur */
             -webkit-backdrop-filter: blur(10px); /* Safari support */
             border-bottom: 1px solid var(--border-color); /* Bottom border only */
@@ -1039,7 +1039,7 @@
             let structures = [];
             const spawnRate = 2;
             let maxStructures = 300; // Default, adjusted on resize
-            const fadeDuration = 750;
+            const fadeDuration = 250;
             let noiseOffset = 0;
 
             let canvas;
@@ -1146,7 +1146,7 @@
                         let repulsionRadiusSq = repulsionRadius * repulsionRadius;
 
                         if (distSq < repulsionRadiusSq && distSq > 1) {
-                            let repulsionStrength = 5.0; // Increased strength significantly
+                            let repulsionStrength = 15.0; // Increased strength significantly
                             let forceMag = repulsionStrength * (1 - p.sqrt(distSq) / repulsionRadius);
                             diff.setMag(forceMag); // Vector pointing away from mouse
                             repulsionOffsetX = diff.x;
@@ -1288,7 +1288,7 @@
 
                 // Initial spawn
                 structures = []; // Clear structures if setup runs again
-                for (let i = 0; i < 30; i++) { spawnStructure(); }
+                for (let i = 0; i < 50; i++) { spawnStructure(); }
 
                 heroMousePos.x = p.width / 2; heroMousePos.y = p.height / 2;
 
