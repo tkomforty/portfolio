@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tony Komforty | Frontend Developer & Creative Coder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Modern Minimal Black Theme --- */
+
+        /* Variables */
+        :root {
+            --background-color: #000000; /* Pure Black */
+            --card-color: #111111;     /* Very Dark Gray for cards/sections */
+            --card-hover-color: #1a1a1a; /* Slightly lighter card hover */
+            --text-color: #E0E0E0;     /* Light Gray/Off-White for readability */
+            --text-secondary-color: #AAAAAA; /* Dimmer text */
+            --accent-color: #00FFFF; /* Default accent color */
+            --accent-hover-color: #00E5E5; /* Default slightly darker hover */
+            --shadow-color: rgba(0, 255, 255, 0.1); /* Default subtle cyan shadow */
+            --border-color: rgba(255, 255, 255, 0.1); /* Subtle white border */
+            --transition: all 0.3s ease-in-out;
+            --carousel-transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Carousel rotation transition */
+            --max-width: 1200px;
+            --header-height: 60px;
+            --border-radius: 8px; /* Consistent border radius */
+            --accent-hue: 180; /* Default Hue for HSL usage */
+
+            /* --- Card Dimensions --- */
+            --card-width: 360px;
+            --card-height: 500px; /* Increased height */
+            --card-visual-height: 200px; /* Height for image area */
+
+            /* --- Section Spacing (Further Reduced Again) --- */
+            --section-padding-y: 2.5rem; /* Further reduced vertical padding */
+            --footer-margin-top: 2.5rem; /* Further reduced footer margin */
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px; /* Base font size */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7; /* Increased line-height for readability */
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; /* Smoother fonts */
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 25px; /* Slightly increased padding */
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--accent-hover-color);
+        }
+
+        img, canvas { /* Ensure images/canvases are responsive */
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black */
+            backdrop-filter: blur(10px); /* Stronger blur */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border-bottom: 1px solid var(--border-color); /* Bottom border only */
+            height: var(--header-height);
+            transition: background-color 0.3s ease;
+        }
+
+        .header-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color); /* White logo */
+            letter-spacing: -0.5px; /* Slightly tighter spacing */
+        }
+        .logo span.dynamic-accent { /* Use class for dynamic color */
+            color: var(--accent-color);
+            transition: color 0.5s ease;
+        }
+
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem; /* Increased gap */
+        }
+
+        nav a {
+            color: var(--text-secondary-color); /* Dimmer nav links */
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover, nav a.active-link /* Style for hover and potential active state */ {
+            color: var(--text-color); /* Brighten on hover */
+        }
+
+        /* Removed underline hover, keeping it minimal */
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: var(--text-color);
+            width: 44px; /* Touch target size */
+            height: 44px; /* Touch target size */
+            justify-content: center;
+            align-items: center;
+        }
+        .mobile-menu i { display: block; }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh; /* Full viewport height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: var(--header-height) 25px 50px; /* Adjust padding */
+            text-align: center;
+            margin-top: 0; /* Remove top margin */
+        }
+
+        #hero-canvas-container { /* Renamed for clarity */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            cursor: none; /* Hide default cursor over canvas */
+        }
+         /* Ensure canvas inside container fills it */
+        #hero-canvas-container canvas {
+            width: 100% !important; /* Override p5 inline styles if necessary */
+            height: 100% !important; /* Override p5 inline styles if necessary */
+        }
+
+
+        .hero-content {
+            z-index: 1;
+            position: relative;
+            max-width: 800px; /* Limit content width */
+            margin: 0 auto;
+            /* Start hidden for fade-in */
+            opacity: 0;
+            pointer-events: none; /* Allow clicks/hovers to pass through to canvas */
+        }
+         /* Re-enable pointer events for buttons inside (if any existed) */
+        /* .hero-content .hero-btns { pointer-events: auto; } */
+
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem); /* Responsive font size */
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
+        }
+        .hero h1 span.dynamic-accent { /* Accent color for name/role */
+             color: var(--accent-color);
+             transition: color 0.5s ease; /* Smooth transition if color changes */
+        }
+
+
+        .hero p.subtitle { /* Added class for subtitle */
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            /* Removed bottom margin since buttons are gone */
+            /* margin-bottom: 2.5rem; */
+            color: var(--text-secondary-color);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Removed .hero-btns styles as the element is deleted */
+
+        /* Modern Button Styles (Kept for other sections) */
+        .btn {
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px; /* Pill shape */
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition), transform 0.2s ease, box-shadow 0.2s ease; /* Added transform/shadow */
+            border: 2px solid transparent; /* Base border */
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 48px;
+            line-height: 1; /* Ensure text aligns vertically */
+        }
+
+        .btn-primary { /* Accent button */
+            background-color: var(--accent-color);
+            color: var(--background-color); /* Black text on accent */
+            border-color: var(--accent-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover-color);
+            border-color: var(--accent-hover-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .btn-secondary { /* Outline button */
+            background-color: transparent;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        /* --- Section Styles --- */
+        section {
+            /* Use reduced padding variable */
+            padding: var(--section-padding-y) 0;
+            overflow: hidden; /* Prevent content overflow issues */
+            scroll-margin-top: var(--header-height); /* Offset for fixed header */
+        }
+
+        .section-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 3rem; /* Generous padding inside container */
+            background-color: var(--card-color);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3); /* Soft shadow */
+            margin-bottom: var(--section-padding-y); /* Space between containers */
+            width: 100%;
+            box-sizing: border-box;
+            /* Start hidden for fade-in */
+             opacity: 0;
+        }
+        /* Remove margin from last section container before footer */
+         section:last-of-type .section-container {
+             margin-bottom: 0;
+         }
+
+
+        .section-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive title */
+            font-weight: 700;
+            margin-bottom: 3rem; /* Increased margin */
+            text-align: center;
+            position: relative;
+            color: var(--text-color);
+        }
+         /* Minimal underline for title */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px; /* Position below text */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            transition: background-color 0.5s ease; /* Smooth transition */
+        }
+
+        /* About Section */
+        .about-layout { /* Renamed for clarity */
+            display: grid;
+            grid-template-columns: 1fr 1.2fr; /* Adjust column ratio if needed */
+            gap: 4rem;
+            align-items: center; /* Vertically align grid items */
+        }
+
+        #about-image-container { /* Container for the NEW generative sketch */
+            width: 100%;
+            max-width: 450px; /* Max width for image container */
+            margin: 0 auto; /* Center if grid column is wider */
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: #050505; /* Darker placeholder background */
+            min-height: 300px; /* Ensure minimum height */
+            aspect-ratio: 1 / 1; /* Make it square-ish or adjust as needed */
+            position: relative; /* Needed for canvas positioning */
+             border: 1px solid var(--border-color);
+             /* Start hidden for animation */
+             opacity: 0;
+             cursor: pointer; /* Indicate interactivity */
+        }
+        /* Ensure canvas fills the container */
+        #about-image-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important; /* Override p5 inline styles */
+            height: 100% !important; /* Override p5 inline styles */
+            object-fit: cover; /* Ensure canvas content covers */
+        }
+
+        .about-content {
+             /* Start hidden for animation */
+             opacity: 0;
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary-color); /* Use secondary text color */
+        }
+        .about-content p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Align skills to start */
+            gap: 0.8rem;
+            margin-top: 2.5rem;
+        }
+
+        .skill-tag {
+            background-color: rgba(0, 255, 255, 0.1); /* Transparent accent - Will use accent */
+            color: var(--accent-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px; /* Pill shape */
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition), background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; /* Added color transitions */
+            border: 1px solid rgba(0, 255, 255, 0.3); /* Accent border - Will use accent */
+            cursor: default; /* Indicate non-interactive */
+        }
+
+        /* Update skill tag colors based on accent */
+        .skill-tag {
+            background-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.1); /* Use HSL for transparency */
+            border-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.3);
+            color: var(--accent-color);
+        }
+        .skill-tag:hover { /* Subtle hover */
+             background-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.2);
+             transform: translateY(-2px);
+        }
+
+
+        /* --- Portfolio Section (Carousel Layout) --- */
+        .portfolio-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem; /* Keep intro */
+             /* Start hidden for fade-in */
+             opacity: 0;
+        }
+
+        .portfolio-intro p {
+            color: var(--text-secondary-color);
+            margin-top: 1rem;
+        }
+
+        /* Scene container for 3D perspective */
+        .carousel-scene {
+            position: relative;
+            width: 100%;
+            max-width: var(--card-width); /* Scene width based on card width */
+            height: calc(var(--card-height) + 50px); /* Adjust height for perspective */
+            margin: 3rem auto; /* Center the scene */
+            perspective: 1500px; /* Increased perspective for larger cards */
+        }
+
+        /* Carousel container that rotates */
+        .portfolio-carousel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: var(--carousel-transition);
+            /* transform: translateZ(-var(--carousel-radius)) rotateY(0deg); */ /* Initial state set by JS */
+        }
+
+        /* Individual cards within the carousel */
+        .portfolio-card {
+            position: absolute;
+            width: var(--card-width);   /* Use variable */
+            height: var(--card-height); /* Use variable */
+            left: 50%;
+            top: 50%;
+            /* Use calc() for dynamic centering based on variables */
+            margin-left: calc(var(--card-width) / -2);
+            margin-top: calc(var(--card-height) / -2);
+
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            backface-visibility: hidden; /* Important for 3D */
+            -webkit-backface-visibility: hidden; /* Safari */
+            transition: opacity 0.3s ease, border-color 0.3s ease; /* Smoother transitions */
+            /* transform set by JS */
+        }
+
+        .portfolio-card:hover {
+             /* Use accent color for hover border */
+             border-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.5);
+        }
+
+        .portfolio-card:not(.is-front) {
+            opacity: 0.6; /* Dim non-front cards more */
+             pointer-events: none; /* Prevent interaction with back cards */
+        }
+        .portfolio-card.is-front {
+            opacity: 1;
+            border-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.5);
+             pointer-events: auto; /* Allow interaction with front card */
+        }
+
+
+        .card-visual {
+            height: var(--card-visual-height); /* Use variable */
+            flex-shrink: 0;
+            background-color: #080808; /* Dark fallback background */
+            border-bottom: 1px solid var(--border-color);
+            position: relative; /* For positioning image */
+            overflow: hidden;
+        }
+
+        .card-visual img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area, might crop */
+            transition: transform 0.4s ease;
+        }
+        .portfolio-card:hover .card-visual img {
+             transform: scale(1.05); /* Subtle zoom on hover */
+        }
+
+
+        .card-content {
+            padding: 1.5rem; /* Increased padding */
+            flex-grow: 1; /* Allow content to take remaining space */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .card-content h3 {
+            font-size: 1.4rem; /* Larger title */
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+        }
+
+        .card-content p {
+            font-size: 1rem; /* Larger text */
+            color: var(--text-secondary-color);
+            margin-bottom: 1rem;
+            flex-grow: 1; /* Push button to bottom */
+        }
+
+        .card-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem; /* Space before button */
+        }
+
+        .card-tech span {
+            padding: 0.3rem 0.8rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary-color);
+            border-radius: 50px;
+            font-size: 0.8rem; /* Slightly larger tags */
+            font-weight: 500;
+        }
+
+        .btn-card-link {
+            padding: 0.7rem 1.6rem; /* Slightly larger button */
+            font-size: 0.9rem;
+            /* Center the button */
+            align-self: center;
+            margin-top: auto; /* Pushes button to bottom if content is short */
+            background-color: transparent;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-card-link:hover {
+             background-color: var(--accent-color);
+             color: var(--background-color);
+             transform: none;
+             box-shadow: none;
+        }
+
+        /* Carousel Navigation Buttons */
+        .carousel-nav {
+            position: absolute;
+            /* Center vertically relative to the whole card */
+            top: 50%;
+            transform: translateY(-50%); /* This handles the vertical centering */
+            z-index: 10; /* Above cards */
+            background-color: rgba(30, 30, 30, 0.7);
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 48px; /* Slightly larger */
+            height: 48px; /* Slightly larger */
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: var(--transition), background-color 0.5s ease, color 0.5s ease; /* Added color transitions */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari */
+        }
+        .carousel-nav:hover {
+            /* Use accent color for hover */
+            background-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.2);
+            color: var(--text-color);
+        }
+        .carousel-nav.prev {
+            left: -70px; /* Position further out for larger cards */
+        }
+        .carousel-nav.next {
+            right: -70px; /* Position further out for larger cards */
+        }
+        /* --- End Portfolio Section --- */
+
+
+        /* Contact Section */
+        .contact-form-element { /* Style for the form itself */
+            max-width: 650px; /* Slightly narrower form */
+            margin: 3rem auto 0;
+            text-align: center;
+             /* Start hidden for fade-in */
+             opacity: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-secondary-color);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background-color: var(--card-color); /* Dark input background */
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition), border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Added transitions */
+            min-height: 50px; /* Ensure min height */
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            /* Use HSL for focus ring */
+            box-shadow: 0 0 0 3px hsla(var(--accent-hue, 180), 100%, 50%, 0.2);
+            background-color: #1A1A1A; /* Slightly lighter on focus */
+        }
+
+        #contact-form button[type="submit"] { /* Specific styling for submit */
+            /* Use existing btn styles */
+            margin-top: 1rem; /* Space above button */
+        }
+
+        #form-status {
+            margin-top: 1.5rem;
+            text-align: center;
+            min-height: 1.5em; /* Prevent layout shift */
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            opacity: 0; /* Hidden by default */
+        }
+        #form-status.visible {
+            opacity: 1;
+        }
+        #form-status.success {
+            color: var(--accent-color);
+        }
+        #form-status.error {
+             color: #FF6B6B; /* Consistent error color */
+        }
+
+
+        /* Footer */
+        footer {
+            background-color: var(--card-color); /* Use card color */
+            padding: 2.5rem 0;
+            text-align: center;
+            /* Use reduced margin variable */
+            margin-top: var(--footer-margin-top);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .copyright {
+            color: var(--text-secondary-color);
+            font-size: 0.9rem;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Slide-in Animation (Alternative Example) */
+        @keyframes slideInLeft {
+             from { opacity: 0; transform: translateX(-50px); }
+             to { opacity: 1; transform: translateX(0); }
+        }
+         @keyframes slideInRight {
+             from { opacity: 0; transform: translateX(50px); }
+             to { opacity: 1; transform: translateX(0); }
+        }
+
+
+        .fade-in-section { /* Class added by JS */
+            animation: fadeInSection 0.8s ease-out forwards;
+            /* Opacity is handled by the keyframe animation */
+        }
+        /* Specific timing/delay for hero content fade */
+        .hero-content.fade-in-section {
+            animation-delay: 0.3s; /* Delay fade-in slightly */
+        }
+
+        /* Example usage for slide-in */
+        .about-layout > *:nth-child(1).animated { animation: slideInLeft 0.8s ease-out forwards; /* Opacity handled by keyframe */ }
+        .about-layout > *:nth-child(2).animated { animation: slideInRight 0.8s ease-out forwards; /* Opacity handled by keyframe */ }
+
+
+        /* --- Responsive Design --- */
+
+        @media (max-width: 992px) {
+            :root {
+                 /* Adjust spacing for medium screens */
+                 --section-padding-y: 2.5rem; /* Keep concise */
+                 --footer-margin-top: 2.5rem; /* Keep concise */
+                 /* Adjust card variables */
+                 --card-width: 320px;
+                 --card-height: 460px;
+                 --card-visual-height: 180px;
+             }
+            .carousel-scene {
+                 max-width: var(--card-width);
+                 height: calc(var(--card-height) + 40px);
+                 perspective: 1100px;
+            }
+             .carousel-nav.prev { left: -50px; }
+             .carousel-nav.next { right: -50px; }
+
+
+            .about-layout {
+                 grid-template-columns: 1fr; /* Stack columns */
+                 gap: 3rem;
+            }
+            #about-image-container {
+                 /* Adjust aspect ratio or height for stacked layout */
+                 margin-bottom: 0; max-width: 100%; max-height: 400px; aspect-ratio: 16 / 9;
+                 order: -1; /* Optional: Put image first on mobile */
+            }
+            .section-container { padding: 2.5rem; }
+            .hero h1 { font-size: clamp(2.2rem, 5.5vw, 3.5rem); }
+            .hero p.subtitle { font-size: clamp(1rem, 2.2vw, 1.15rem); }
+        }
+
+        @media (max-width: 768px) {
+            html { font-size: 15px; }
+             :root {
+                 /* Adjust spacing for small screens */
+                 --section-padding-y: 2.5rem; /* Keep concise */
+                 --footer-margin-top: 2.5rem; /* Keep concise */
+                 /* Adjust card variables */
+                  --card-width: 280px;
+                  --card-height: 420px;
+                  --card-visual-height: 160px;
+             }
+            .container, .header-container { padding: 0 15px; }
+            header { height: calc(var(--header-height) - 5px); }
+
+            /* Mobile Navigation Styles */
+            nav { position: fixed; /* Use fixed for full height overlay */ top: calc(var(--header-height) - 5px); left: 0; width: 100%; background-color: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); display: none; z-index: 999; /* Ensure above content */ max-height: calc(100vh - var(--header-height) + 5px); overflow-y: auto; }
+            nav.active { display: block; }
+            nav ul { flex-direction: column; align-items: center; padding: 1.5rem 0 2rem; gap: 0; }
+            nav a { padding: 1rem 0; width: 100%; text-align: center; font-size: 1.1rem; color: var(--text-color); }
+            nav a:hover, nav a.active-link { background-color: hsla(var(--accent-hue, 180), 100%, 50%, 0.1); color: var(--accent-color); }
+            .mobile-menu { display: flex; }
+
+            .hero { min-height: 80vh; padding-bottom: 30px; }
+            .hero h1 { font-size: clamp(2rem, 7vw, 3rem); }
+            .hero p.subtitle { font-size: clamp(0.95rem, 3vw, 1.1rem); }
+
+              .carousel-scene {
+                  max-width: var(--card-width);
+                  height: calc(var(--card-height) + 30px);
+                  perspective: 900px; /* Less perspective */
+                  margin: 2rem auto;
+              }
+              .carousel-nav { width: 40px; height: 40px; font-size: 1rem; }
+              .carousel-nav.prev { left: -25px; } /* Bring buttons closer */
+              .carousel-nav.next { right: -25px; }
+
+
+            .contact-form-element { max-width: 100%; }
+            /* section padding already adjusted via variable */
+            .section-title { margin-bottom: 2.5rem; }
+            .section-container { padding: 2rem; }
+        }
+
+        @media (max-width: 576px) {
+            html { font-size: 14.5px; }
+             :root {
+                 /* Adjust spacing for extra small screens */
+                 --section-padding-y: 2rem; /* Even more concise */
+                 --footer-margin-top: 2rem; /* Even more concise */
+                 /* Adjust card variables */
+                 --card-width: 240px; /* Even smaller card */
+                 --card-height: 380px;
+                 --card-visual-height: 140px;
+             }
+            .hero { min-height: 75vh; padding-top: var(--header-height); }
+            /* Optional: Hide hero canvas on very small screens if performance is an issue */
+            /* #hero-canvas-container { display: none; } */
+            .hero-btns { flex-direction: column; align-items: center; gap: 1rem; width: 100%; }
+            .btn { width: 90%; max-width: 320px; padding: 0.8rem 1.5rem; }
+            .section-title { font-size: 1.6rem; }
+            .section-title::after { bottom: -10px; width: 40px; height: 2px;}
+            /* section padding already adjusted via variable */
+            .section-container { padding: 1.5rem; margin-bottom: var(--section-padding-y); } /* Ensure margin uses variable */
+            input[type="text"], input[type="email"], textarea { padding: 0.9rem 1rem; }
+
+             .carousel-scene {
+                 max-width: var(--card-width);
+                 height: calc(var(--card-height) + 20px);
+                 perspective: 700px;
+             }
+             .card-content { padding: 1rem; }
+             .card-content h3 { font-size: 1.1rem; }
+             .card-content p { font-size: 0.85rem; margin-bottom: 0.8rem;}
+             .card-tech span { font-size: 0.7rem; padding: 0.2rem 0.6rem;}
+             .btn-card-link { font-size: 0.8rem; padding: 0.5rem 1rem;}
+             .carousel-nav.prev { left: -10px; } /* Position buttons closer */
+             .carousel-nav.next { right: -10px; }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo"><span class="dynamic-accent">tkomforty</span>@gmail.com </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div id="hero-canvas-container"></div>
+        <div class="hero-content">
+             <h1>Hi, I'm <span class="dynamic-accent">Tony Komforty</span>.<br>Frontend Developer <br>& <span class="dynamic-accent">Creative Coder</span></h1>
+              <p class="subtitle">I design and develop engaging, interactive web experiences where code meets creativity.</p>
+            </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-container">
+                 <h2 class="section-title">About Me</h2>
+                 <div class="about-layout">
+                     <div id="about-image-container" class="animated">
+                          </div>
+                     <div class="about-content animated">
+                         <p>I'm a frontend developer with a passion for creating interactive web experiences that use code to blend art, music and touch.</p>
+                         <p>My background in music and audio gives me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries, and pushing unique things out into the world.</p>
+                         <p>From generative art and audio visualizers to interactive UI elements, I enjoy using modern web technologies to build beautiful and responsive interfaces.</p>
+                         <div class="skills">
+                             <span class="skill-tag">HTML5</span>
+                             <span class="skill-tag">CSS3</span>
+                             <span class="skill-tag">JavaScript</span>
+                             <span class="skill-tag">React</span>
+                             <span class="skill-tag">p5.js</span>
+                             <span class="skill-tag">Three.js</span>
+                             <span class="skill-tag">tone.js</span>
+                             <span class="skill-tag">Web Audio API</span>
+                             <span class="skill-tag">GLSL</span>
+                             <span class="skill-tag">Responsive Design</span>
+                             <span class="skill-tag">CSS Animation</span>
+                             <span class="skill-tag">Git</span>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-container">
+                <div class="portfolio-intro">
+                    <h2 class="section-title">Selected Works</h2>
+                    <p>A few interactive projects exploring creative coding with p5.js, Three.js, Tone.js, and shaders. Use the arrows to navigate.</p>
+                </div>
+
+                <div class="carousel-scene">
+                    <div class="portfolio-carousel">
+                        <div class="portfolio-card">
+                            <div class="card-visual">
+                                <img src="sonicField.png"
+                                     alt="Sonic Field Project Preview"
+                                     onerror="this.src='https://placehold.co/360x200/111111/444444?text=Image+Error'; this.alt='Image failed to load'">
+                            </div>
+                            <div class="card-content">
+                                <h3>Sonic Field</h3>
+                                <p>Generative audio instrument triggered by user interaction.</p>
+                                <div class="card-tech">
+                                    <span>p5.js</span><span>tone.js</span><span>JS</span>
+                                </div>
+                                <a href="https://tkomforty.github.io/sonicField/" target="_blank" rel="noopener noreferrer" class="btn btn-card-link">View Project</a>
+                            </div>
+                        </div>
+                        <div class="portfolio-card">
+                            <div class="card-visual">
+                                <img src="structGen.png"
+                                     alt="Structure Generator Project Preview"
+                                     onerror="this.src='https://placehold.co/360x200/111111/444444?text=Image+Error'; this.alt='Image failed to load'">
+                            </div>
+                            <div class="card-content">
+                                <h3>Structure Generator</h3>
+                                <p>Procedural generation of pseudo-brutalist building structures.</p>
+                                <div class="card-tech">
+                                    <span>Three.js</span><span>JS</span>
+                                </div>
+                                <a href="https://tkomforty.github.io/brutalist/" target="_blank" rel="noopener noreferrer" class="btn btn-card-link">View Project</a>
+                            </div>
+                        </div>
+                        <div class="portfolio-card">
+                            <div class="card-visual">
+                                 <img src="shaderWaves.png"
+                                     alt="Shader Waves Project Preview"
+                                     onerror="this.src='https://placehold.co/360x200/111111/444444?text=Image+Error'; this.alt='Image failed to load'">
+                            </div>
+                            <div class="card-content">
+                                <h3>Shader Waves</h3>
+                                <p>Interactive WebGL wave shader with touch compatibility.</p>
+                                <div class="card-tech">
+                                    <span>WebGL</span><span>GLSL</span><span>JS</span>
+                                </div>
+                                <a href="https://tkomforty.github.io/shaderWaves/" target="_blank" rel="noopener noreferrer" class="btn btn-card-link">View Project</a>
+                            </div>
+                        </div>
+                         <div class="portfolio-card">
+                            <div class="card-visual">
+                                <img src="birdsFlock.png"
+                                     alt="Bird Flocking Sim Project Preview"
+                                     onerror="this.src='https://placehold.co/360x200/111111/444444?text=Image+Error'; this.alt='Image failed to load'">
+                            </div>
+                            <div class="card-content">
+                                <h3>Bird Flocking Sim</h3>
+                                <p>Boids algorithm simulation with GLB assets and cloud generation.</p>
+                                <div class="card-tech">
+                                    <span>Three.js</span><span>GLB</span><span>JS</span>
+                                </div>
+                                <a href="https://tkomforty.github.io/birdsFlock/" target="_blank" rel="noopener noreferrer" class="btn btn-card-link">View Project</a>
+                            </div>
+                        </div>
+                        <div class="portfolio-card">
+                            <div class="card-visual">
+                                 <img src="infiniteBoard.png"
+                                     alt="Infinite Board Project Preview"
+                                     onerror="this.src='https://placehold.co/360x200/111111/444444?text=Image+Error'; this.alt='Image failed to load'">
+                            </div>
+                            <div class="card-content">
+                                <h3>Infinite Board</h3>
+                                <p>Experiment with an infinitely scrolling post-it note canvas for productivity.</p>
+                                <div class="card-tech">
+                                    <span>react.js</span><span>HTML</span>
+                                </div>
+                                <a href="https://tkomforty.github.io/infiniteBoard/" target="_blank" rel="noopener noreferrer" class="btn btn-card-link">View Project</a>
+                            </div>
+                        </div>
+                        </div>
+                     <button class="carousel-nav prev" aria-label="Previous Project">
+                         <i class="fas fa-chevron-left"></i>
+                     </button>
+                     <button class="carousel-nav next" aria-label="Next Project">
+                         <i class="fas fa-chevron-right"></i>
+                     </button>
+                </div>
+                </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-container">
+                <div style="text-align: center;">
+                    <h2 class="section-title">Get In Touch</h2>
+                </div>
+                <form id="contact-form" class="contact-form-element" action="https://formspree.io/f/xblgzerp" method="POST">
+                     <div class="form-group">
+                         <label for="name">Name</label>
+                         <input type="text" id="name" name="name" placeholder="Your Name" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="email">Email</label>
+                         <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                     </div>
+                     <div class="form-group">
+                         <label for="message">Message</label>
+                         <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or just say hello!" required></textarea>
+                     </div>
+                     <button type="submit" class="btn btn-primary">Send Message</button>
+                 </form>
+                <div id="form-status"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p class="copyright">© <span id="year"></span> Tony Komforty. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Utility Functions ---
+        function rgbToHex(rgb) { if (!rgb || rgb.length < 3) return '#00FFFF'; return "#" + rgb.map(x => { const hex = x.toString(16); return hex.length === 1 ? '0' + hex : hex; }).join(''); }
+        function darkenHexColor(hex, percent) { hex = hex.replace(/^#/, ''); let r = parseInt(hex.substring(0, 2), 16); let g = parseInt(hex.substring(2, 4), 16); let b = parseInt(hex.substring(4, 6), 16); r = Math.max(0, Math.floor(r * (1 - percent / 100))); g = Math.max(0, Math.floor(g * (1 - percent / 100))); b = Math.max(0, Math.floor(b * (1 - percent / 100))); return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`; }
+        function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; const max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max === min) { h = s = 0; } else { const d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]; }
+
+        // --- Dynamic Accent Color ---
+        async function fetchAndUpdateAccentColor() { const defaultAccent = '#00FFFF'; const defaultHover = '#00E5E5'; const defaultShadow = 'rgba(0, 255, 255, 0.1)'; const defaultHue = 180; try { const response = await fetch('http://colormind.io/api/', { method: 'POST', body: JSON.stringify({ model: "ui" }) }); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } const data = await response.json(); if (data && data.result && data.result.length >= 3) { const accentRGB = data.result[2]; const accentHex = rgbToHex(accentRGB); const accentHoverHex = darkenHexColor(accentHex, 10); const [accentHue, accentSat, accentLight] = rgbToHsl(...accentRGB); document.documentElement.style.setProperty('--accent-color', accentHex); document.documentElement.style.setProperty('--accent-hover-color', accentHoverHex); document.documentElement.style.setProperty('--shadow-color', `hsla(${accentHue}, 100%, 50%, 0.15)`); document.documentElement.style.setProperty('--accent-hue', accentHue.toString()); console.log(`Accent color updated to: ${accentHex} (Hue: ${accentHue})`); } else { throw new Error('Invalid data format received from Colormind API.'); } } catch (error) { console.error('Failed to fetch or apply color palette:', error); document.documentElement.style.setProperty('--accent-color', defaultAccent); document.documentElement.style.setProperty('--accent-hover-color', defaultHover); document.documentElement.style.setProperty('--shadow-color', defaultShadow); document.documentElement.style.setProperty('--accent-hue', defaultHue.toString()); } }
+
+        // --- Core Site Functionality ---
+        document.addEventListener('DOMContentLoaded', () => { document.getElementById('year').textContent = new Date().getFullYear(); fetchAndUpdateAccentColor().then(() => { requestAnimationFrame(initSketches); }); const mobileMenuButton = document.querySelector('.mobile-menu'); const nav = document.querySelector('nav'); if (mobileMenuButton && nav) { mobileMenuButton.addEventListener('click', (e) => { e.stopPropagation(); nav.classList.toggle('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.toggle('fa-bars'); icon.classList.toggle('fa-times'); } }); } const navLinks = nav ? nav.querySelectorAll('a') : []; navLinks.forEach(link => { link.addEventListener('click', function(e) { const targetId = this.getAttribute('href'); if (targetId && targetId.startsWith('#') && targetId.length > 1) { const targetElement = document.querySelector(targetId); if (targetElement) { e.preventDefault(); const headerOffset = document.querySelector('header')?.offsetHeight || 60; const elementPosition = targetElement.getBoundingClientRect().top; const offsetPosition = elementPosition + window.pageYOffset - headerOffset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); if (nav && nav.classList.contains('active')) { nav.classList.remove('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); } } } } }); }); document.addEventListener('click', (e) => { if (nav && nav.classList.contains('active')) { if (!nav.contains(e.target) && !mobileMenuButton.contains(e.target)) { nav.classList.remove('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); } } } }); const elementsToObserve = document.querySelectorAll('.section-container, .hero-content, .portfolio-intro, .contact-form-element, .about-layout > .animated'); if ("IntersectionObserver" in window) { const sectionObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { if (entry.target.classList.contains('animated')) { entry.target.style.opacity = '1'; } else { entry.target.classList.add('fade-in-section'); } observer.unobserve(entry.target); } }); }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }); elementsToObserve.forEach(el => { sectionObserver.observe(el); }); } else { elementsToObserve.forEach(el => { el.style.opacity = 1; }); } const form = document.getElementById("contact-form"); const status = document.getElementById("form-status"); async function handleSubmit(event) { event.preventDefault(); const data = new FormData(event.target); status.innerHTML = 'Sending...'; status.className = 'visible'; try { const response = await fetch(event.target.action, { method: form.method, body: data, headers: { 'Accept': 'application/json' } }); if (response.ok) { status.innerHTML = "Message sent successfully!"; status.classList.add('success'); form.reset(); setTimeout(() => { status.classList.remove('visible'); setTimeout(() => { status.innerHTML = ''; status.className = ''; }, 300); }, 5000); } else { const responseData = await response.json().catch(() => ({})); let errorMessage = "Oops! There was a problem submitting your form."; if (responseData && responseData.errors) { errorMessage = responseData.errors.map(error => error.message).join(", "); } else if (response.statusText) { errorMessage = `Error: ${response.statusText}`; } status.innerHTML = errorMessage; status.classList.add('error'); } } catch (error) { console.error("Form submission error:", error); status.innerHTML = "Network error. Please check your connection and try again."; status.classList.add('error'); } } if (form && status) { form.addEventListener("submit", handleSubmit); } else { console.warn("Contact form or status element not found."); } const carousel = document.querySelector('.portfolio-carousel'); const cards = carousel ? carousel.querySelectorAll('.portfolio-card') : []; const prevButton = document.querySelector('.carousel-nav.prev'); const nextButton = document.querySelector('.carousel-nav.next'); if (!carousel || cards.length === 0 || !prevButton || !nextButton) { console.warn('Carousel elements not found, skipping initialization.'); if(prevButton) prevButton.style.display = 'none'; if(nextButton) nextButton.style.display = 'none'; } else { const numCards = cards.length; const theta = 360 / numCards; let currentAngle = 0; let radius = 0; function calculateRadius() { if (!cards[0] || cards[0].offsetWidth === 0) { return false; } const computedStyle = window.getComputedStyle(cards[0]); const cardWidth = parseFloat(computedStyle.width); if (cardWidth > 0 && numCards > 0) { radius = Math.round((cardWidth / 2) / Math.tan(Math.PI / numCards)); return true; } return false; } function positionCards() { if (!calculateRadius()) { requestAnimationFrame(positionCards); return; }; cards.forEach((card, index) => { const angle = theta * index; card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`; const targetAngle = (-currentAngle % 360 + 360) % 360; const targetIndex = Math.round(targetAngle / theta) % numCards; card.classList.toggle('is-front', index === targetIndex); }); rotateCarousel(); } function rotateCarousel() { if (radius === 0) { if (!calculateRadius()) return; } carousel.style.transform = `translateZ(${-radius}px) rotateY(${currentAngle}deg)`; const normalizedAngle = (-currentAngle % 360 + 360) % 360; const frontIndex = Math.round(normalizedAngle / theta) % numCards; cards.forEach((card, index) => { card.classList.toggle('is-front', index === frontIndex); }); } prevButton.addEventListener('click', () => { currentAngle += theta; rotateCarousel(); }); nextButton.addEventListener('click', () => { currentAngle -= theta; rotateCarousel(); }); function debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }; requestAnimationFrame(positionCards); const debouncedResizeHandler = debounce(() => { requestAnimationFrame(positionCards); }, 250); window.addEventListener('resize', debouncedResizeHandler); } });
+
+        // --- p5.js Sketches ---
+        let heroP5Instance = null;
+        let aboutP5Instance = null;
+
+        // --- NEW Hero Sketch: Floating Structures (Based on User Example) ---
+        const newHeroSketch = function(p) {
+            const fr = 60;
+            let structures = [];
+            const spawnRate = 2;
+            let maxStructures = 300; // Default, adjusted on resize
+            const fadeDuration = 750;
+            let noiseOffset = 0;
+
+            let canvas;
+            let container;
+
+            // Mouse tracking for interaction
+            let heroMousePos = { x: 0, y: 0, active: false };
+            let heroMouseInactiveTimeout;
+
+
+            class Structure {
+                constructor(x, y, w, d, h) {
+                    this.x = x;
+                    this.y = y;
+                    this.z = p.random(-p.height * 0.5, p.height * 0.5); // Add depth
+                    this.w = w;
+                    this.d = d;
+                    this.h = h;
+                    this.age = 0;
+                    this.targetAlpha = p.random(180, 220); // Target alpha
+                    // *** CHANGE: Instant Appearance ***
+                    this.alpha = this.targetAlpha; // Start at target alpha
+                    this.fadeOut = false;
+
+                    this.color = this.getRandomColor(); // Get initial color
+                    this.targetColor = this.color; // Start with same target
+
+                    this.rotationSpeed = p.random(0.0002, 0.003);
+                    this.rotationX = p.random(p.TWO_PI);
+                    this.rotationY = p.random(p.TWO_PI);
+                    this.rotationZ = p.random(p.TWO_PI);
+                    this.scaleFactor = p.random(0.1, 1.1);
+                    this.pulseRate = p.random(0.01, 0.03);
+                    this.noiseValue = p.random(0, 100); // For movement variation
+
+                    this.shapeType = p.random([0, 1, 2]); // 0: box, 1: rounded box, 2: custom shape
+                    this.movePattern = p.random([0, 1, 2]); // Different movement patterns
+                }
+
+                // Generate color based on global accent hue
+                getRandomColor() {
+                    const accentHueCSS = getComputedStyle(document.documentElement).getPropertyValue('--accent-hue').trim();
+                    const baseHue = parseFloat(accentHueCSS) || 180; // Fallback hue
+
+                    let h, s, b;
+                    if (p.random() < 0.8) { // 80% chance for accent variations
+                        h = (baseHue + p.random(-30, 30) + 360) % 360;
+                        s = p.random(60, 100);
+                        b = p.random(70, 100);
+                    } else { // 20% chance for grayscale or complementary
+                        if (p.random() < 0.5) { // Grayscale
+                            h = 0; s = 0; b = p.random(40, 90);
+                        } else { // Complementary
+                            h = (baseHue + 180 + p.random(-20, 20) + 360) % 360;
+                            s = p.random(60, 90); b = p.random(60, 90);
+                        }
+                    }
+                    p.colorMode(p.HSB, 360, 100, 100, 255);
+                    let col = p.color(h, s, b); // Create color without alpha here
+                    p.colorMode(p.RGB, 255); // Switch back to RGB
+                    return col;
+                }
+
+                update() {
+                    this.noiseValue += 0.01;
+
+                    // --- Base Movement ---
+                    let baseX = this.x;
+                    let baseY = this.y;
+                    let baseZ = this.z;
+
+                    switch(this.movePattern) {
+                        case 0: // Gentle sine wave
+                            baseY += p.sin(p.frameCount * 0.005 + this.noiseValue) * 0.4;
+                            baseX += p.cos(p.frameCount * 0.003 + this.noiseValue) * 0.2;
+                            break;
+                        case 1: // Perlin noise-based movement
+                            baseY += p.map(p.noise(this.noiseValue, 0), 0, 1, -0.7, 0.7);
+                            baseX += p.map(p.noise(0, this.noiseValue), 0, 1, -0.5, 0.5);
+                            break;
+                        case 2: // Slightly orbital around initial Z plane
+                            let angle = p.frameCount * 0.002 + this.noiseValue;
+                            baseX += p.sin(angle) * 0.3;
+                            baseY += p.cos(angle) * 0.3;
+                            break;
+                    }
+                    // Add subtle depth movement
+                    baseZ += p.map(p.noise(this.noiseValue + 10, this.noiseValue + 20), 0, 1, -0.3, 0.3);
+
+                    // --- Mouse Repulsion Offset Calculation ---
+                    let repulsionOffsetX = 0;
+                    let repulsionOffsetY = 0;
+                    if (heroMousePos.active) {
+                        // Map mouse position to world space (approximate, relative to center)
+                        let mouseWorldX = p.map(heroMousePos.x, 0, p.width, -p.width * 0.6, p.width * 0.6);
+                        let mouseWorldY = p.map(heroMousePos.y, 0, p.height, -p.height * 0.6, p.height * 0.6);
+                        let mouseVec = p.createVector(mouseWorldX, mouseWorldY);
+                        let structureVec = p.createVector(this.x, this.y); // Use current world X, Y
+
+                        let diff = p5.Vector.sub(structureVec, mouseVec);
+                        let distSq = diff.magSq();
+                        // *** Increase radius and strength ***
+                        let repulsionRadius = p.min(p.width, p.height) * 0.35; // Repel within 35%
+                        let repulsionRadiusSq = repulsionRadius * repulsionRadius;
+
+                        if (distSq < repulsionRadiusSq && distSq > 1) {
+                            let repulsionStrength = 5.0; // Increased strength significantly
+                            let forceMag = repulsionStrength * (1 - p.sqrt(distSq) / repulsionRadius);
+                            diff.setMag(forceMag); // Vector pointing away from mouse
+                            repulsionOffsetX = diff.x;
+                            repulsionOffsetY = diff.y;
+                        }
+                    }
+
+                    // --- Apply Movement and Repulsion ---
+                    this.x = baseX + repulsionOffsetX;
+                    this.y = baseY + repulsionOffsetY;
+                    this.z = baseZ; // Keep Z movement separate
+
+                    // --- Age and Alpha ---
+                    this.age++;
+                    // *** CHANGE: Removed fade-in logic ***
+                    if (this.age > fadeDuration) {
+                        this.fadeOut = true;
+                    }
+                    if (this.fadeOut) {
+                        this.alpha -= 1.5; // Gradual fade out
+                    }
+                    // Ensure alpha doesn't go below 0
+                    this.alpha = p.max(0, this.alpha);
+                }
+
+
+                draw() {
+                    p.push();
+                    p.translate(this.x, this.y, this.z); // Use z position
+
+                    // Apply rotations
+                    p.rotateX(this.rotationX + p.frameCount * this.rotationSpeed);
+                    p.rotateY(this.rotationY + p.frameCount * this.rotationSpeed * 0.7);
+                    p.rotateZ(this.rotationZ + p.frameCount * this.rotationSpeed * 0.5);
+
+                    // Subtle pulsing effect
+                    let pulse = 1 + p.sin(p.frameCount * this.pulseRate) * 0.05;
+                    p.scale(this.scaleFactor * pulse);
+
+                    // Apply color and alpha
+                    let r = p.red(this.color);
+                    let g = p.green(this.color);
+                    let b = p.blue(this.color);
+
+                    // Use fill and ambientLight for appearance
+                    p.fill(r, g, b, this.alpha); // Use calculated alpha
+                    p.ambientLight(r / 2, g / 2, b / 2); // Subtle self-glow
+
+                    // Border
+                    p.stroke(0, 0, 0, this.alpha * 0.5); // Make border semi-transparent too
+                    p.strokeWeight(0.8);
+
+                    // Draw shape
+                    switch(this.shapeType) {
+                        case 0: p.box(this.w, this.d, this.h); break;
+                        case 1: p.box(this.w * 0.9, this.d * 0.9, this.h * 0.95); break; // Emulate rounded
+                        case 2: // Custom shape (example: simple prism)
+                            p.beginShape();
+                            // Base
+                            p.vertex(-this.w/2, -this.d/2, -this.h/2); p.vertex( this.w/2, -this.d/2, -this.h/2);
+                            p.vertex( this.w/2,  this.d/2, -this.h/2); p.vertex(-this.w/2,  this.d/2, -this.h/2);
+                            // Top
+                            p.vertex(-this.w/3, -this.d/3, this.h/2); p.vertex( this.w/3, -this.d/3, this.h/2);
+                            p.vertex( this.w/3,  this.d/3, this.h/2); p.vertex(-this.w/3,  this.d/3, this.h/2);
+                            // Sides (p5 automatically connects them in WEBGL for simple shapes)
+                            p.endShape(p.CLOSE);
+                            break;
+                    }
+                    p.pop();
+                }
+            } // End Structure Class
+
+            function spawnStructure() {
+                let w = p.random(30, 250);
+                let d = p.random(30, 250);
+                let h = p.random(30, 180);
+                // Spread structures wider and deeper
+                let range = p.max(p.width, p.height) * 1.5;
+                let x = p.map(p.noise(noiseOffset, 0), 0, 1, -range, range);
+                let y = p.map(p.noise(0, noiseOffset + 10), 0, 1, -range * 0.8, range * 0.8);
+
+                let s = new Structure(x, y, w, d, h);
+                structures.push(s);
+            }
+
+            // --- Mouse Tracking Handlers ---
+            function handleMouseMove(e) { updateHeroMousePos(e.clientX, e.clientY); }
+            function handleTouchMove(e) { if (e.touches.length > 0) { e.preventDefault(); updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+            function handleTouchStart(e) { if (e.touches.length > 0) { e.preventDefault(); updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+            function handleTouchEnd() { deactivateHeroMousePosAfterDelay(); }
+            function handleMouseLeave() { deactivateHeroMousePosAfterDelay(); }
+
+            function updateHeroMousePos(clientX, clientY) {
+                 if (!canvas || !canvas.elt) return;
+                 const rect = canvas.elt.getBoundingClientRect();
+                 heroMousePos.x = p.constrain(clientX - rect.left, 0, p.width);
+                 heroMousePos.y = p.constrain(clientY - rect.top, 0, p.height);
+                 heroMousePos.active = true;
+                 if (heroMouseInactiveTimeout) clearTimeout(heroMouseInactiveTimeout);
+                 heroMouseInactiveTimeout = setTimeout(() => { heroMousePos.active = false; }, 2500);
+             }
+             function deactivateHeroMousePosAfterDelay() {
+                 if (heroMouseInactiveTimeout) clearTimeout(heroMouseInactiveTimeout);
+                 heroMouseInactiveTimeout = setTimeout(() => { heroMousePos.active = false; }, 500);
+             }
+             // --- End Mouse Tracking ---
+
+            p.setup = function() {
+                container = document.getElementById('hero-canvas-container');
+                console.log("Hero setup: container found?", !!container);
+                if (container) { console.log("Hero setup: container dimensions", container.offsetWidth, container.offsetHeight); console.log("Hero setup: container display style", window.getComputedStyle(container).display); }
+                if (!container || container.offsetWidth <= 0 || container.offsetHeight <= 0 || window.getComputedStyle(container).display === 'none') {
+                    console.warn("Hero canvas container not ready, zero dimensions, or hidden. Aborting setup."); p.noCanvas(); return;
+                }
+                try {
+                    // *** Use WEBGL context ***
+                    canvas = p.createCanvas(container.offsetWidth, container.offsetHeight, p.WEBGL);
+                    canvas.parent(container); canvas.style('display', 'block');
+                    console.log("Hero canvas created (WEBGL):", p.width, p.height);
+                } catch (e) { console.error("Error creating hero canvas:", e); p.noCanvas(); return; }
+
+                p.colorMode(p.RGB, 255); // Default for WEBGL often
+                p.frameRate(fr);
+                p.smooth(8);
+                p.pixelDensity(1.5); // Keep higher density if performance allows
+
+                // Adjust max structures based on initial size
+                if (p.width < 768) { maxStructures = 100; } else { maxStructures = 300; }
+
+                // Initial spawn
+                structures = []; // Clear structures if setup runs again
+                for (let i = 0; i < 30; i++) { spawnStructure(); }
+
+                heroMousePos.x = p.width / 2; heroMousePos.y = p.height / 2;
+
+                // Attach mouse listeners
+                const eventTarget = window; // Listen globally for mouse move
+                eventTarget.removeEventListener('mousemove', handleMouseMove); eventTarget.removeEventListener('touchmove', handleTouchMove); eventTarget.removeEventListener('touchstart', handleTouchStart); eventTarget.removeEventListener('touchend', handleTouchEnd); eventTarget.removeEventListener('mouseleave', handleMouseLeave);
+                eventTarget.addEventListener('mousemove', handleMouseMove); eventTarget.addEventListener('touchmove', handleTouchMove, { passive: false }); eventTarget.addEventListener('touchstart', handleTouchStart, { passive: false }); eventTarget.addEventListener('touchend', handleTouchEnd); eventTarget.addEventListener('mouseleave', handleMouseLeave);
+
+                heroP5Instance = p;
+                console.log("Hero setup complete (Floating Structures).");
+            };
+
+            p.draw = function() {
+                if (!canvas || !p.width || p.width <= 0 || !p.height || p.height <= 0) return;
+                try {
+                    // Smoother background fade
+                    p.background(10, 24, 48, 20);
+
+                    // Subtle camera movement
+                    let camX = p.map(p.sin(p.frameCount * 0.0007), -1, 1, -50, 50);
+                    let camY = p.map(p.cos(p.frameCount * 0.0005), -1, 1, -30, 30);
+                    // Adjust camera Z based on height for consistent perspective
+                    let camZ = (p.height / 2) / p.tan(p.PI / 6);
+                    p.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+
+                    // Gentle rotation
+                    p.rotateZ(p.frameCount * 0.001);
+                    p.rotateX(p.sin(p.frameCount * 0.0003) * 0.1);
+
+                    // Dynamic spawning
+                    if (p.frameCount % spawnRate === 0 && structures.length < maxStructures) {
+                        spawnStructure();
+                    }
+
+                    // Update noise offset
+                    noiseOffset += 0.01;
+
+                    // Update and draw structures
+                    for (let i = structures.length - 1; i >= 0; i--) {
+                        structures[i].update();
+                        structures[i].draw();
+                        if (structures[i].alpha <= 0) {
+                            structures.splice(i, 1); // Remove faded out structures
+                        }
+                    }
+
+                } catch (e) { console.error("Error in hero draw loop:", e); p.noLoop(); }
+            };
+
+            p.windowResized = function() {
+                if (!container) return;
+                const currentWidth = container.offsetWidth; const currentHeight = container.offsetHeight;
+                if (currentWidth > 0 && currentHeight > 0) {
+                    if (canvas) {
+                        p.resizeCanvas(currentWidth, currentHeight);
+                        console.log("Hero canvas resized:", currentWidth, currentHeight);
+                        // Adjust max structures based on new size
+                         if (p.width < 768) { maxStructures = 100; } else { maxStructures = 300; }
+                         while (structures.length > maxStructures) { structures.pop(); } // Trim if needed
+
+                        heroMousePos.x = p.width / 2; heroMousePos.y = p.height / 2; heroMousePos.active = false;
+                        if (heroMouseInactiveTimeout) clearTimeout(heroMouseInactiveTimeout);
+                    } else { console.log("Hero container resized, attempting setup again."); p.setup(); }
+                } else { console.warn("Hero container resize detected with zero dimensions. Resize skipped."); }
+            };
+        }; // End newHeroSketch
+
+
+        // --- UPDATED Generative About Sketch with Fix and Mouse Repulsion ---
+        const generativeAboutSketch = function(p) {
+            let particles = []; const maxParticles = 120; const particlesPerFrame = 1;
+            let canvas; let container; let baseHue; let flowfield; let scl = 15;
+            let cols, rows; let zoff = 0;
+            let aboutMousePos = { x: 0, y: 0, active: false };
+            let aboutMouseInactiveTimeout;
+
+            class Particle {
+                constructor() { this.pos = p.createVector(p.width / 2 + p.random(-20, 20), p.height / 2 + p.random(-20, 20)); this.vel = p.createVector(0, 0); this.acc = p.createVector(0, 0); this.maxSpeed = p.random(1.5, 3); this.maxLifespan = p.random(150, 350); this.lifespan = this.maxLifespan; this.size = p.random(1, 3); this.hue = (baseHue + p.random(-15, 15) + 360) % 360; this.sat = p.random(60, 90); this.bri = p.random(85, 100); this.prevPos = this.pos.copy(); }
+                isDead() { return this.lifespan <= 0 || this.pos.x < -this.size || this.pos.x > p.width + this.size || this.pos.y < -this.size || this.pos.y > p.height + this.size; }
+                applyForce(force) { this.acc.add(force); }
+                follow(vectors) { if (!vectors || vectors.length === 0) return; let x = p.floor(this.pos.x / scl); let y = p.floor(this.pos.y / scl); x = p.constrain(x, 0, cols - 1); y = p.constrain(y, 0, rows - 1); let index = x + y * cols; if (index >= 0 && index < vectors.length && vectors[index]) { let force = vectors[index]; this.applyForce(force); } }
+
+                // *** FIX: Accept mouse state as arguments ***
+                applyMouseRepulsion(isActive, mousePosVec) {
+                    if (isActive) { // Use passed argument
+                        const diff = p5.Vector.sub(this.pos, mousePosVec); // Use passed argument
+                        const distSq = diff.magSq();
+                        const repulsionRadiusSq = 80 * 80;
+                        if (distSq < repulsionRadiusSq && distSq > 1) {
+                            const repulsionStrength = 2.0;
+                            let force = diff.copy();
+                            force.setMag(repulsionStrength * (1 - p.sqrt(distSq) / p.sqrt(repulsionRadiusSq)));
+                            this.applyForce(force);
+                        }
+                    }
+                }
+                // *** Pass mouse state to applyMouseRepulsion ***
+                update(isActive, mousePosVec) {
+                    this.lifespan -= 1;
+                    this.applyMouseRepulsion(isActive, mousePosVec); // Pass arguments
+                    this.vel.add(this.acc);
+                    this.vel.limit(this.maxSpeed);
+                    this.pos.add(this.vel);
+                    this.acc.mult(0);
+                    this.vel.mult(0.98);
+                 }
+                updatePrev() { this.prevPos.x = this.pos.x; this.prevPos.y = this.pos.y; }
+                display() { let alpha = p.map(this.lifespan, 0, this.maxLifespan, 0, 150); p.strokeWeight(this.size * 0.8); p.stroke(this.hue, this.sat, this.bri, alpha * 0.5); p.line(this.prevPos.x, this.prevPos.y, this.pos.x, this.pos.y); this.updatePrev(); }
+                reset() { this.pos = p.createVector(p.width / 2 + p.random(-20, 20), p.height / 2 + p.random(-20, 20)); this.vel.set(0, 0); this.acc.set(0, 0); this.lifespan = this.maxLifespan; this.prevPos.set(this.pos); }
+            }
+            function initializeFlowField() { cols = p.floor(p.width / scl); rows = p.floor(p.height / scl); if (cols <= 0 || rows <= 0) { console.warn("Cannot initialize flow field with zero dimensions."); flowfield = []; return; } flowfield = new Array(cols * rows); let yoff = 0; for (let y = 0; y < rows; y++) { let xoff = 0; for (let x = 0; x < cols; x++) { let index = x + y * cols; let angle = p.noise(xoff, yoff, zoff) * p.TWO_PI * 2; let v = p5.Vector.fromAngle(angle); v.setMag(0.3); flowfield[index] = v; xoff += 0.1; } yoff += 0.1; } zoff += 0.005; }
+             function handleAboutMouseMove(e) { updateAboutMousePos(e.clientX, e.clientY); }
+             function handleAboutTouchMove(e) { if (e.touches.length > 0) { e.preventDefault(); updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+             function handleAboutTouchStart(e) { if (e.touches.length > 0) { e.preventDefault(); updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+             function handleAboutTouchEnd() { deactivateAboutMousePosAfterDelay(); }
+             function handleAboutMouseLeave() { deactivateAboutMousePosAfterDelay(); }
+             function updateAboutMousePos(clientX, clientY) {
+                 if (!canvas || !canvas.elt) return;
+                 const rect = canvas.elt.getBoundingClientRect();
+                 aboutMousePos.x = p.constrain(clientX - rect.left, 0, p.width);
+                 aboutMousePos.y = p.constrain(clientY - rect.top, 0, p.height);
+                 aboutMousePos.active = true;
+                 if (aboutMouseInactiveTimeout) clearTimeout(aboutMouseInactiveTimeout);
+                 aboutMouseInactiveTimeout = setTimeout(() => { aboutMousePos.active = false; }, 1500);
+             }
+             function deactivateAboutMousePosAfterDelay() {
+                 if (aboutMouseInactiveTimeout) clearTimeout(aboutMouseInactiveTimeout);
+                 aboutMouseInactiveTimeout = setTimeout(() => { aboutMousePos.active = false; }, 500);
+             }
+
+            p.setup = function() {
+                container = document.getElementById('about-image-container');
+                console.log("About setup: container found?", !!container);
+                 if (container) { console.log("About setup: container dimensions", container.offsetWidth, container.offsetHeight); console.log("About setup: container display style", window.getComputedStyle(container).display); console.log("About setup: container visibility style", window.getComputedStyle(container).visibility); }
+                if (!container || container.offsetWidth <= 0 || container.offsetHeight <= 0 || window.getComputedStyle(container).display === 'none') {
+                    console.warn("About container not ready, zero dimensions, or hidden. Aborting setup."); p.noCanvas(); return;
+                }
+                const containerWidth = container.offsetWidth; const containerHeight = container.offsetHeight;
+                try { canvas = p.createCanvas(containerWidth, containerHeight); canvas.parent(container); canvas.style('display', 'block'); console.log("Generative About canvas created:", containerWidth, containerHeight); } catch(e) { console.error("Error creating generative About canvas:", e); p.noCanvas(); return; }
+                p.colorMode(p.HSB, 360, 100, 100, 255); const accentHueCSS = getComputedStyle(document.documentElement).getPropertyValue('--accent-hue').trim(); baseHue = parseFloat(accentHueCSS) || 180; if (isNaN(baseHue)) baseHue = 180; console.log("About sketch using base hue:", baseHue); initializeFlowField(); particles = []; p.background(5, 5, 5);
+                aboutP5Instance = p;
+                if (canvas && canvas.elt) {
+                    const eventTarget = canvas.elt;
+                    eventTarget.removeEventListener('mousemove', handleAboutMouseMove); eventTarget.removeEventListener('touchmove', handleAboutTouchMove); eventTarget.removeEventListener('touchstart', handleAboutTouchStart); eventTarget.removeEventListener('touchend', handleAboutTouchEnd); eventTarget.removeEventListener('mouseleave', handleAboutMouseLeave);
+                    eventTarget.addEventListener('mousemove', handleAboutMouseMove); eventTarget.addEventListener('touchmove', handleAboutTouchMove, { passive: false }); eventTarget.addEventListener('touchstart', handleAboutTouchStart, { passive: false }); eventTarget.addEventListener('touchend', handleAboutTouchEnd); eventTarget.addEventListener('mouseleave', handleAboutMouseLeave);
+                }
+                 console.log("About setup complete.");
+            };
+            p.draw = function() {
+                if (!canvas || !p.width || p.width <= 0 || !p.height || p.height <= 0) { /*console.log("About draw skipped - canvas not ready.");*/ return; }
+                try {
+                    p.background(5, 5, 5, 30); initializeFlowField();
+                    if (particles.length < maxParticles) { for(let i = 0; i < particlesPerFrame; i++) { particles.push(new Particle()); } }
+                    // *** Create mouse vector once per frame ***
+                    const currentMouseVec = p.createVector(aboutMousePos.x, aboutMousePos.y);
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        particles[i].follow(flowfield);
+                        // *** Pass current mouse state to update ***
+                        particles[i].update(aboutMousePos.active, currentMouseVec);
+                        particles[i].display();
+                        if (particles[i].isDead()) { particles.splice(i, 1); }
+                    }
+                } catch (e) { console.error("Error in generative About draw loop:", e); p.noLoop(); }
+             };
+            p.windowResized = function() { if (!container) return; const containerWidth = container.offsetWidth; const containerHeight = container.offsetHeight; if (containerWidth > 0 && containerHeight > 0) { if (canvas) { p.resizeCanvas(containerWidth, containerHeight); console.log("Generative About canvas resized:", containerWidth, containerHeight); p.background(5, 5, 5); initializeFlowField(); particles.forEach(particle => particle.reset()); aboutMousePos.x = p.width / 2; aboutMousePos.y = p.height / 2; aboutMousePos.active = false; if (aboutMouseInactiveTimeout) clearTimeout(aboutMouseInactiveTimeout); } else { console.log("About container resized, attempting setup again."); p.setup(); } } else { console.warn("About container resize detected with zero dimensions. Resize skipped."); } };
+        }; // End generativeAboutSketch
+
+
+        // --- Initialize p5 Sketches ---
+        function initSketches() {
+            console.log("Attempting to initialize p5 sketches...");
+            let heroInitialized = false;
+            let aboutInitialized = false;
+
+            try {
+                const heroContainer = document.getElementById('hero-canvas-container');
+                if (heroContainer && heroContainer.offsetWidth > 0 && heroContainer.offsetHeight > 0 && window.getComputedStyle(heroContainer).display !== 'none') {
+                    if (!heroP5Instance) {
+                       console.log("Initializing NEW hero sketch (Floating Structures).");
+                       // *** Instantiate the new hero sketch ***
+                       new p5(newHeroSketch);
+                    } else { console.log("Hero sketch instance already exists."); }
+                    heroInitialized = true;
+                } else { console.log("Hero sketch container not found, hidden, or zero dimensions."); }
+            } catch (e) { console.error("Error initializing hero sketch:", e); }
+
+            try {
+                const aboutContainer = document.getElementById('about-image-container');
+                if (aboutContainer && aboutContainer.offsetWidth > 0 && aboutContainer.offsetHeight > 0 && window.getComputedStyle(aboutContainer).display !== 'none') {
+                     if (!aboutP5Instance) {
+                        console.log("Initializing generative about sketch.");
+                        new p5(generativeAboutSketch);
+                     } else { console.log("About sketch instance already exists."); }
+                    aboutInitialized = true;
+                } else { console.log("About sketch container not found, hidden, or zero dimensions."); }
+            } catch (e) { console.error("Error initializing generative about sketch:", e); }
+
+            if (!heroInitialized && !aboutInitialized) {
+                console.warn("Neither p5 sketch was initialized.");
+            }
+        }
+        // Initial call is now handled within DOMContentLoaded after color fetch
+
+    </script>
+
+</body>
+</html>
