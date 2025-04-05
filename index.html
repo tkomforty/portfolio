@@ -16,9 +16,9 @@
         /* Variables */
         :root {
             --background-color: #000000; /* Pure Black */
-            --card-color: #111111;     /* Very Dark Gray for cards/sections */
+            --card-color: #111111;      /* Very Dark Gray for cards/sections */
             --card-hover-color: #1a1a1a; /* Slightly lighter card hover */
-            --text-color: #E0E0E0;     /* Light Gray/Off-White for readability */
+            --text-color: #E0E0E0;      /* Light Gray/Off-White for readability */
             --text-secondary-color: #AAAAAA; /* Dimmer text */
             --accent-color: #00FFFF; /* Default accent color */
             --accent-hover-color: #00E5E5; /* Default slightly darker hover */
@@ -51,6 +51,8 @@
         html {
             scroll-behavior: smooth;
             font-size: 16px; /* Base font size */
+             /* Allow vertical scrolling even if content is slightly taller than viewport */
+             /* Removed -webkit-overflow-scrolling: touch; as it's often not needed and can cause issues */
         }
 
         body {
@@ -58,9 +60,14 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.7; /* Increased line-height for readability */
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            /* Ensure body itself can scroll if content overflows viewport */
+            overflow-y: auto;
             -webkit-font-smoothing: antialiased; /* Smoother fonts */
             -moz-osx-font-smoothing: grayscale;
+            /* Added to potentially help iOS scrolling */
+            position: relative;
+            min-height: 100%;
         }
 
         .container {
@@ -164,10 +171,12 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Contain the canvas */
             padding: var(--header-height) 25px 50px; /* Adjust padding */
             text-align: center;
             margin-top: 0; /* Remove top margin */
+            /* Ensure hero doesn't prevent body scroll */
+            box-sizing: border-box;
         }
 
         #hero-canvas-container { /* Renamed for clarity */
@@ -178,11 +187,15 @@
             height: 100%;
             z-index: 0;
             cursor: none; /* Hide default cursor over canvas */
+            /* Ensure touch events on the canvas don't block scrolling by default */
+            touch-action: manipulation; /* Standard property */
+             -ms-touch-action: manipulation; /* IE */
         }
          /* Ensure canvas inside container fills it */
         #hero-canvas-container canvas {
             width: 100% !important; /* Override p5 inline styles if necessary */
             height: 100% !important; /* Override p5 inline styles if necessary */
+            display: block; /* Ensure no extra space */
         }
 
 
@@ -336,6 +349,9 @@
              /* Start hidden for animation */
              opacity: 0;
              cursor: pointer; /* Indicate interactivity */
+             /* Ensure touch events on the canvas don't block scrolling by default */
+            touch-action: manipulation; /* Standard property */
+            -ms-touch-action: manipulation; /* IE */
         }
         /* Ensure canvas fills the container */
         #about-image-container canvas {
@@ -345,6 +361,7 @@
             width: 100% !important; /* Override p5 inline styles */
             height: 100% !important; /* Override p5 inline styles */
             object-fit: cover; /* Ensure canvas content covers */
+            display: block; /* Ensure no extra space */
         }
 
         .about-content {
@@ -759,15 +776,15 @@
             .hero h1 { font-size: clamp(2rem, 7vw, 3rem); }
             .hero p.subtitle { font-size: clamp(0.95rem, 3vw, 1.1rem); }
 
-              .carousel-scene {
-                  max-width: var(--card-width);
-                  height: calc(var(--card-height) + 30px);
-                  perspective: 900px; /* Less perspective */
-                  margin: 2rem auto;
-              }
-              .carousel-nav { width: 40px; height: 40px; font-size: 1rem; }
-              .carousel-nav.prev { left: -25px; } /* Bring buttons closer */
-              .carousel-nav.next { right: -25px; }
+               .carousel-scene {
+                   max-width: var(--card-width);
+                   height: calc(var(--card-height) + 30px);
+                   perspective: 900px; /* Less perspective */
+                   margin: 2rem auto;
+               }
+               .carousel-nav { width: 40px; height: 40px; font-size: 1rem; }
+               .carousel-nav.prev { left: -25px; } /* Bring buttons closer */
+               .carousel-nav.next { right: -25px; }
 
 
             .contact-form-element { max-width: 100%; }
@@ -798,18 +815,18 @@
             .section-container { padding: 1.5rem; margin-bottom: var(--section-padding-y); } /* Ensure margin uses variable */
             input[type="text"], input[type="email"], textarea { padding: 0.9rem 1rem; }
 
-             .carousel-scene {
-                 max-width: var(--card-width);
-                 height: calc(var(--card-height) + 20px);
-                 perspective: 700px;
-             }
-             .card-content { padding: 1rem; }
-             .card-content h3 { font-size: 1.1rem; }
-             .card-content p { font-size: 0.85rem; margin-bottom: 0.8rem;}
-             .card-tech span { font-size: 0.7rem; padding: 0.2rem 0.6rem;}
-             .btn-card-link { font-size: 0.8rem; padding: 0.5rem 1rem;}
-             .carousel-nav.prev { left: -10px; } /* Position buttons closer */
-             .carousel-nav.next { right: -10px; }
+               .carousel-scene {
+                   max-width: var(--card-width);
+                   height: calc(var(--card-height) + 20px);
+                   perspective: 700px;
+               }
+               .card-content { padding: 1rem; }
+               .card-content h3 { font-size: 1.1rem; }
+               .card-content p { font-size: 0.85rem; margin-bottom: 0.8rem;}
+               .card-tech span { font-size: 0.7rem; padding: 0.2rem 0.6rem;}
+               .btn-card-link { font-size: 0.8rem; padding: 0.5rem 1rem;}
+               .carousel-nav.prev { left: -10px; } /* Position buttons closer */
+               .carousel-nav.next { right: -10px; }
         }
 
     </style>
@@ -837,7 +854,7 @@
         <div class="hero-content">
              <h1>Hi, I'm <span class="dynamic-accent">Tony Komforty</span>.<br>Frontend Developer <br>& <span class="dynamic-accent">Creative Coder</span></h1>
               <p class="subtitle">I design and develop engaging, interactive web experiences where code meets creativity.</p>
-            </div>
+             </div>
     </section>
 
     <section class="about" id="about">
@@ -845,27 +862,27 @@
             <div class="section-container">
                  <h2 class="section-title">About Me</h2>
                  <div class="about-layout">
-                     <div id="about-image-container" class="animated">
+                      <div id="about-image-container" class="animated">
+                           </div>
+                      <div class="about-content animated">
+                          <p>I'm a frontend developer with a passion for creating interactive web experiences that use code to blend art, music and touch.</p>
+                          <p>My background in music and audio gives me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries, and pushing unique things out into the world.</p>
+                          <p>From generative art and audio visualizers to interactive UI elements, I enjoy using modern web technologies to build beautiful and responsive interfaces.</p>
+                          <div class="skills">
+                               <span class="skill-tag">HTML5</span>
+                               <span class="skill-tag">CSS3</span>
+                               <span class="skill-tag">JavaScript</span>
+                               <span class="skill-tag">React</span>
+                               <span class="skill-tag">p5.js</span>
+                               <span class="skill-tag">Three.js</span>
+                               <span class="skill-tag">tone.js</span>
+                               <span class="skill-tag">Web Audio API</span>
+                               <span class="skill-tag">GLSL</span>
+                               <span class="skill-tag">Responsive Design</span>
+                               <span class="skill-tag">CSS Animation</span>
+                               <span class="skill-tag">Git</span>
                           </div>
-                     <div class="about-content animated">
-                         <p>I'm a frontend developer with a passion for creating interactive web experiences that use code to blend art, music and touch.</p>
-                         <p>My background in music and audio gives me a unique perspective on interactive web design. I love exploring creativity, testing technical boundaries, and pushing unique things out into the world.</p>
-                         <p>From generative art and audio visualizers to interactive UI elements, I enjoy using modern web technologies to build beautiful and responsive interfaces.</p>
-                         <div class="skills">
-                             <span class="skill-tag">HTML5</span>
-                             <span class="skill-tag">CSS3</span>
-                             <span class="skill-tag">JavaScript</span>
-                             <span class="skill-tag">React</span>
-                             <span class="skill-tag">p5.js</span>
-                             <span class="skill-tag">Three.js</span>
-                             <span class="skill-tag">tone.js</span>
-                             <span class="skill-tag">Web Audio API</span>
-                             <span class="skill-tag">GLSL</span>
-                             <span class="skill-tag">Responsive Design</span>
-                             <span class="skill-tag">CSS Animation</span>
-                             <span class="skill-tag">Git</span>
-                         </div>
-                     </div>
+                      </div>
                  </div>
             </div>
         </div>
@@ -957,12 +974,12 @@
                             </div>
                         </div>
                         </div>
-                     <button class="carousel-nav prev" aria-label="Previous Project">
-                         <i class="fas fa-chevron-left"></i>
-                     </button>
-                     <button class="carousel-nav next" aria-label="Next Project">
-                         <i class="fas fa-chevron-right"></i>
-                     </button>
+                      <button class="carousel-nav prev" aria-label="Previous Project">
+                           <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <button class="carousel-nav next" aria-label="Next Project">
+                           <i class="fas fa-chevron-right"></i>
+                      </button>
                 </div>
                 </div>
         </div>
@@ -975,20 +992,20 @@
                     <h2 class="section-title">Get In Touch</h2>
                 </div>
                 <form id="contact-form" class="contact-form-element" action="https://formspree.io/f/xblgzerp" method="POST">
-                     <div class="form-group">
-                         <label for="name">Name</label>
-                         <input type="text" id="name" name="name" placeholder="Your Name" required>
-                     </div>
-                     <div class="form-group">
-                         <label for="email">Email</label>
-                         <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
-                     </div>
-                     <div class="form-group">
-                         <label for="message">Message</label>
-                         <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or just say hello!" required></textarea>
-                     </div>
-                     <button type="submit" class="btn btn-primary">Send Message</button>
-                 </form>
+                       <div class="form-group">
+                           <label for="name">Name</label>
+                           <input type="text" id="name" name="name" placeholder="Your Name" required>
+                       </div>
+                       <div class="form-group">
+                           <label for="email">Email</label>
+                           <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                       </div>
+                       <div class="form-group">
+                           <label for="message">Message</label>
+                           <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or just say hello!" required></textarea>
+                       </div>
+                       <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
                 <div id="form-status"></div>
             </div>
         </div>
@@ -1007,7 +1024,7 @@
         function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; const max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max === min) { h = s = 0; } else { const d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)]; }
 
         // --- Dynamic Accent Color ---
-        async function fetchAndUpdateAccentColor() { const defaultAccent = '#00FFFF'; const defaultHover = '#00E5E5'; const defaultShadow = 'rgba(0, 255, 255, 0.1)'; const defaultHue = 180; try { const response = await fetch('http://colormind.io/api/', { method: 'POST', body: JSON.stringify({ model: "ui" }) }); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } const data = await response.json(); if (data && data.result && data.result.length >= 3) { const accentRGB = data.result[2]; const accentHex = rgbToHex(accentRGB); const accentHoverHex = darkenHexColor(accentHex, 10); const [accentHue, accentSat, accentLight] = rgbToHsl(...accentRGB); document.documentElement.style.setProperty('--accent-color', accentHex); document.documentElement.style.setProperty('--accent-hover-color', accentHoverHex); document.documentElement.style.setProperty('--shadow-color', `hsla(${accentHue}, 100%, 50%, 0.15)`); document.documentElement.style.setProperty('--accent-hue', accentHue.toString()); console.log(`Accent color updated to: ${accentHex} (Hue: ${accentHue})`); } else { throw new Error('Invalid data format received from Colormind API.'); } } catch (error) { console.error('Failed to fetch or apply color palette:', error); document.documentElement.style.setProperty('--accent-color', defaultAccent); document.documentElement.style.setProperty('--accent-hover-color', defaultHover); document.documentElement.style.setProperty('--shadow-color', defaultShadow); document.documentElement.style.setProperty('--accent-hue', defaultHue.toString()); } }
+        async function fetchAndUpdateAccentColor() { const defaultAccent = '#00FFFF'; const defaultHover = '#00E5E5'; const defaultShadow = 'rgba(0, 255, 255, 0.1)'; const defaultHue = 180; try { const response = await fetch('https://colormind.io/api/', { method: 'POST', body: JSON.stringify({ model: "ui" }) }); if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } const data = await response.json(); if (data && data.result && data.result.length >= 3) { const accentRGB = data.result[2]; const accentHex = rgbToHex(accentRGB); const accentHoverHex = darkenHexColor(accentHex, 10); const [accentHue, accentSat, accentLight] = rgbToHsl(...accentRGB); document.documentElement.style.setProperty('--accent-color', accentHex); document.documentElement.style.setProperty('--accent-hover-color', accentHoverHex); document.documentElement.style.setProperty('--shadow-color', `hsla(${accentHue}, 100%, 50%, 0.15)`); document.documentElement.style.setProperty('--accent-hue', accentHue.toString()); console.log(`Accent color updated to: ${accentHex} (Hue: ${accentHue})`); } else { throw new Error('Invalid data format received from Colormind API.'); } } catch (error) { console.error('Failed to fetch or apply color palette (using defaults):', error); document.documentElement.style.setProperty('--accent-color', defaultAccent); document.documentElement.style.setProperty('--accent-hover-color', defaultHover); document.documentElement.style.setProperty('--shadow-color', defaultShadow); document.documentElement.style.setProperty('--accent-hue', defaultHue.toString()); } }
 
         // --- Core Site Functionality ---
         document.addEventListener('DOMContentLoaded', () => { document.getElementById('year').textContent = new Date().getFullYear(); fetchAndUpdateAccentColor().then(() => { requestAnimationFrame(initSketches); }); const mobileMenuButton = document.querySelector('.mobile-menu'); const nav = document.querySelector('nav'); if (mobileMenuButton && nav) { mobileMenuButton.addEventListener('click', (e) => { e.stopPropagation(); nav.classList.toggle('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.toggle('fa-bars'); icon.classList.toggle('fa-times'); } }); } const navLinks = nav ? nav.querySelectorAll('a') : []; navLinks.forEach(link => { link.addEventListener('click', function(e) { const targetId = this.getAttribute('href'); if (targetId && targetId.startsWith('#') && targetId.length > 1) { const targetElement = document.querySelector(targetId); if (targetElement) { e.preventDefault(); const headerOffset = document.querySelector('header')?.offsetHeight || 60; const elementPosition = targetElement.getBoundingClientRect().top; const offsetPosition = elementPosition + window.pageYOffset - headerOffset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); if (nav && nav.classList.contains('active')) { nav.classList.remove('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); } } } } }); }); document.addEventListener('click', (e) => { if (nav && nav.classList.contains('active')) { if (!nav.contains(e.target) && !mobileMenuButton.contains(e.target)) { nav.classList.remove('active'); const icon = mobileMenuButton.querySelector('i'); if (icon) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); } } } }); const elementsToObserve = document.querySelectorAll('.section-container, .hero-content, .portfolio-intro, .contact-form-element, .about-layout > .animated'); if ("IntersectionObserver" in window) { const sectionObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { if (entry.target.classList.contains('animated')) { entry.target.style.opacity = '1'; } else { entry.target.classList.add('fade-in-section'); } observer.unobserve(entry.target); } }); }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }); elementsToObserve.forEach(el => { sectionObserver.observe(el); }); } else { elementsToObserve.forEach(el => { el.style.opacity = 1; }); } const form = document.getElementById("contact-form"); const status = document.getElementById("form-status"); async function handleSubmit(event) { event.preventDefault(); const data = new FormData(event.target); status.innerHTML = 'Sending...'; status.className = 'visible'; try { const response = await fetch(event.target.action, { method: form.method, body: data, headers: { 'Accept': 'application/json' } }); if (response.ok) { status.innerHTML = "Message sent successfully!"; status.classList.add('success'); form.reset(); setTimeout(() => { status.classList.remove('visible'); setTimeout(() => { status.innerHTML = ''; status.className = ''; }, 300); }, 5000); } else { const responseData = await response.json().catch(() => ({})); let errorMessage = "Oops! There was a problem submitting your form."; if (responseData && responseData.errors) { errorMessage = responseData.errors.map(error => error.message).join(", "); } else if (response.statusText) { errorMessage = `Error: ${response.statusText}`; } status.innerHTML = errorMessage; status.classList.add('error'); } } catch (error) { console.error("Form submission error:", error); status.innerHTML = "Network error. Please check your connection and try again."; status.classList.add('error'); } } if (form && status) { form.addEventListener("submit", handleSubmit); } else { console.warn("Contact form or status element not found."); } const carousel = document.querySelector('.portfolio-carousel'); const cards = carousel ? carousel.querySelectorAll('.portfolio-card') : []; const prevButton = document.querySelector('.carousel-nav.prev'); const nextButton = document.querySelector('.carousel-nav.next'); if (!carousel || cards.length === 0 || !prevButton || !nextButton) { console.warn('Carousel elements not found, skipping initialization.'); if(prevButton) prevButton.style.display = 'none'; if(nextButton) nextButton.style.display = 'none'; } else { const numCards = cards.length; const theta = 360 / numCards; let currentAngle = 0; let radius = 0; function calculateRadius() { if (!cards[0] || cards[0].offsetWidth === 0) { return false; } const computedStyle = window.getComputedStyle(cards[0]); const cardWidth = parseFloat(computedStyle.width); if (cardWidth > 0 && numCards > 0) { radius = Math.round((cardWidth / 2) / Math.tan(Math.PI / numCards)); return true; } return false; } function positionCards() { if (!calculateRadius()) { requestAnimationFrame(positionCards); return; }; cards.forEach((card, index) => { const angle = theta * index; card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`; const targetAngle = (-currentAngle % 360 + 360) % 360; const targetIndex = Math.round(targetAngle / theta) % numCards; card.classList.toggle('is-front', index === targetIndex); }); rotateCarousel(); } function rotateCarousel() { if (radius === 0) { if (!calculateRadius()) return; } carousel.style.transform = `translateZ(${-radius}px) rotateY(${currentAngle}deg)`; const normalizedAngle = (-currentAngle % 360 + 360) % 360; const frontIndex = Math.round(normalizedAngle / theta) % numCards; cards.forEach((card, index) => { card.classList.toggle('is-front', index === frontIndex); }); } prevButton.addEventListener('click', () => { currentAngle += theta; rotateCarousel(); }); nextButton.addEventListener('click', () => { currentAngle -= theta; rotateCarousel(); }); function debounce(func, wait) { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }; requestAnimationFrame(positionCards); const debouncedResizeHandler = debounce(() => { requestAnimationFrame(positionCards); }, 250); window.addEventListener('resize', debouncedResizeHandler); } });
@@ -1217,8 +1234,18 @@
 
             // --- Mouse Tracking Handlers ---
             function handleMouseMove(e) { updateHeroMousePos(e.clientX, e.clientY); }
-            function handleTouchMove(e) { if (e.touches.length > 0) { e.preventDefault(); updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
-            function handleTouchStart(e) { if (e.touches.length > 0) { e.preventDefault(); updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+            function handleTouchMove(e) {
+                if (e.touches.length > 0) {
+                    // ** SCROLL FIX: Removed e.preventDefault(); **
+                    updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }
+            function handleTouchStart(e) {
+                if (e.touches.length > 0) {
+                    // ** SCROLL FIX: Removed e.preventDefault(); **
+                    updateHeroMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }
             function handleTouchEnd() { deactivateHeroMousePosAfterDelay(); }
             function handleMouseLeave() { deactivateHeroMousePosAfterDelay(); }
 
@@ -1230,12 +1257,12 @@
                  heroMousePos.active = true;
                  if (heroMouseInactiveTimeout) clearTimeout(heroMouseInactiveTimeout);
                  heroMouseInactiveTimeout = setTimeout(() => { heroMousePos.active = false; }, 2500);
-             }
-             function deactivateHeroMousePosAfterDelay() {
+              }
+              function deactivateHeroMousePosAfterDelay() {
                  if (heroMouseInactiveTimeout) clearTimeout(heroMouseInactiveTimeout);
                  heroMouseInactiveTimeout = setTimeout(() => { heroMousePos.active = false; }, 500);
-             }
-             // --- End Mouse Tracking ---
+              }
+              // --- End Mouse Tracking ---
 
             p.setup = function() {
                 container = document.getElementById('hero-canvas-container');
@@ -1267,8 +1294,18 @@
 
                 // Attach mouse listeners
                 const eventTarget = window; // Listen globally for mouse move
-                eventTarget.removeEventListener('mousemove', handleMouseMove); eventTarget.removeEventListener('touchmove', handleTouchMove); eventTarget.removeEventListener('touchstart', handleTouchStart); eventTarget.removeEventListener('touchend', handleTouchEnd); eventTarget.removeEventListener('mouseleave', handleMouseLeave);
-                eventTarget.addEventListener('mousemove', handleMouseMove); eventTarget.addEventListener('touchmove', handleTouchMove, { passive: false }); eventTarget.addEventListener('touchstart', handleTouchStart, { passive: false }); eventTarget.addEventListener('touchend', handleTouchEnd); eventTarget.addEventListener('mouseleave', handleMouseLeave);
+                eventTarget.removeEventListener('mousemove', handleMouseMove);
+                eventTarget.removeEventListener('touchmove', handleTouchMove);
+                eventTarget.removeEventListener('touchstart', handleTouchStart);
+                eventTarget.removeEventListener('touchend', handleTouchEnd);
+                eventTarget.removeEventListener('mouseleave', handleMouseLeave);
+
+                eventTarget.addEventListener('mousemove', handleMouseMove);
+                // ** SCROLL FIX: Using passive: true for touchmove/start as preventDefault is removed **
+                eventTarget.addEventListener('touchmove', handleTouchMove, { passive: true });
+                eventTarget.addEventListener('touchstart', handleTouchStart, { passive: true });
+                eventTarget.addEventListener('touchend', handleTouchEnd);
+                eventTarget.addEventListener('mouseleave', handleMouseLeave);
 
                 heroP5Instance = p;
                 console.log("Hero setup complete (Floating Structures).");
@@ -1374,8 +1411,18 @@
             }
             function initializeFlowField() { cols = p.floor(p.width / scl); rows = p.floor(p.height / scl); if (cols <= 0 || rows <= 0) { console.warn("Cannot initialize flow field with zero dimensions."); flowfield = []; return; } flowfield = new Array(cols * rows); let yoff = 0; for (let y = 0; y < rows; y++) { let xoff = 0; for (let x = 0; x < cols; x++) { let index = x + y * cols; let angle = p.noise(xoff, yoff, zoff) * p.TWO_PI * 2; let v = p5.Vector.fromAngle(angle); v.setMag(0.3); flowfield[index] = v; xoff += 0.1; } yoff += 0.1; } zoff += 0.005; }
              function handleAboutMouseMove(e) { updateAboutMousePos(e.clientX, e.clientY); }
-             function handleAboutTouchMove(e) { if (e.touches.length > 0) { e.preventDefault(); updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
-             function handleAboutTouchStart(e) { if (e.touches.length > 0) { e.preventDefault(); updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY); } }
+             function handleAboutTouchMove(e) {
+                if (e.touches.length > 0) {
+                    // ** SCROLL FIX: Removed e.preventDefault(); **
+                    updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+             }
+             function handleAboutTouchStart(e) {
+                if (e.touches.length > 0) {
+                    // ** SCROLL FIX: Removed e.preventDefault(); **
+                    updateAboutMousePos(e.touches[0].clientX, e.touches[0].clientY);
+                }
+             }
              function handleAboutTouchEnd() { deactivateAboutMousePosAfterDelay(); }
              function handleAboutMouseLeave() { deactivateAboutMousePosAfterDelay(); }
              function updateAboutMousePos(clientX, clientY) {
@@ -1405,8 +1452,18 @@
                 aboutP5Instance = p;
                 if (canvas && canvas.elt) {
                     const eventTarget = canvas.elt;
-                    eventTarget.removeEventListener('mousemove', handleAboutMouseMove); eventTarget.removeEventListener('touchmove', handleAboutTouchMove); eventTarget.removeEventListener('touchstart', handleAboutTouchStart); eventTarget.removeEventListener('touchend', handleAboutTouchEnd); eventTarget.removeEventListener('mouseleave', handleAboutMouseLeave);
-                    eventTarget.addEventListener('mousemove', handleAboutMouseMove); eventTarget.addEventListener('touchmove', handleAboutTouchMove, { passive: false }); eventTarget.addEventListener('touchstart', handleAboutTouchStart, { passive: false }); eventTarget.addEventListener('touchend', handleAboutTouchEnd); eventTarget.addEventListener('mouseleave', handleAboutMouseLeave);
+                    eventTarget.removeEventListener('mousemove', handleAboutMouseMove);
+                    eventTarget.removeEventListener('touchmove', handleAboutTouchMove);
+                    eventTarget.removeEventListener('touchstart', handleAboutTouchStart);
+                    eventTarget.removeEventListener('touchend', handleAboutTouchEnd);
+                    eventTarget.removeEventListener('mouseleave', handleAboutMouseLeave);
+
+                    eventTarget.addEventListener('mousemove', handleAboutMouseMove);
+                     // ** SCROLL FIX: Using passive: true for touchmove/start as preventDefault is removed **
+                    eventTarget.addEventListener('touchmove', handleAboutTouchMove, { passive: true });
+                    eventTarget.addEventListener('touchstart', handleAboutTouchStart, { passive: true });
+                    eventTarget.addEventListener('touchend', handleAboutTouchEnd);
+                    eventTarget.addEventListener('mouseleave', handleAboutMouseLeave);
                 }
                  console.log("About setup complete.");
             };
@@ -1451,10 +1508,10 @@
             try {
                 const aboutContainer = document.getElementById('about-image-container');
                 if (aboutContainer && aboutContainer.offsetWidth > 0 && aboutContainer.offsetHeight > 0 && window.getComputedStyle(aboutContainer).display !== 'none') {
-                     if (!aboutP5Instance) {
+                    if (!aboutP5Instance) {
                         console.log("Initializing generative about sketch.");
                         new p5(generativeAboutSketch);
-                     } else { console.log("About sketch instance already exists."); }
+                    } else { console.log("About sketch instance already exists."); }
                     aboutInitialized = true;
                 } else { console.log("About sketch container not found, hidden, or zero dimensions."); }
             } catch (e) { console.error("Error initializing generative about sketch:", e); }
