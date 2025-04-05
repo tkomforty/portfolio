@@ -682,7 +682,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer <br> & <span style="color: var(--secondary-color);">Creative Coder</span></h1>
-                <p>Making interactive experiences.</p>
+                <p>Designing & Developing</p>
                 <div class="hero-btns">
                     <a href="#portfolio" class="btn btn-primary">View My Work</a>
                     <a href="#contact" class="btn btn-secondary">Get In Touch</a>
@@ -769,7 +769,7 @@
                     </div>
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" placeholder="Tell me about your project or any opportunities" required></textarea>
+                        <textarea id="message" name="message" placeholder="Tell me about your projects!" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
@@ -1289,22 +1289,21 @@
           };
         }; // End heroSketch
 
-        // About section sketch
+        // About section sketch (Using loadPixels)
         const aboutSketch = function(p) {
-            let img2;
+            let img2; // Variable to hold the loaded image
             let time = 0;
-            let imageRatio = 9/16;
+            let imageRatio = 9/16; // Default aspect ratio
             let points = [];
-            const numPoints = 2000; // Keep reduced point count
+            const numPoints = 2500; // Keep reduced point count
             let canvas;
-            let placeholderImage = null;
-            let loggedSource = false; // Flag to log source only once
+            let pixelsLoaded = false; // Flag to check if pixels are ready
 
              // ... (Point class remains the same) ...
              class Point {
                 constructor() {
                     this.x = 0; this.y = 0;
-                    this.size = p.random(1, 5);
+                    this.size = p.random(1, 10);
                     this.color = p.color(0);
                     this.seed = p.random(1000);
                 }
@@ -1316,8 +1315,8 @@
                     }
                 }
                 update() {
-                    const nx = p.noise(this.seed, time * 0.1);
-                    const ny = p.noise(this.seed + 500, time * 0.1);
+                    const nx = p.noise(this.seed, time * 0.01);
+                    const ny = p.noise(this.seed + 500, time * 0.01);
                     this.x = p.map(nx, 0, 1, -p.width * 0.1, p.width * 1.1);
                     this.y = p.map(ny, 0, 1, -p.height * 0.1, p.height * 1.1);
 
@@ -1330,31 +1329,39 @@
                     this.updateColor();
 
                     const brightness = p.brightness(this.color);
-                    this.size = p.max(1, p.map(brightness, 0, 255, 1, 6));
+                    this.size = p.max(1, p.map(brightness, 0, 255, 1, 10));
                 }
                 updateColor() {
-                    // Determine which image source to use (real or placeholder)
-                    let sourceImage = (img2 && img2.width > 0) ? img2 : placeholderImage;
-                    let isUsingPlaceholder = !(img2 && img2.width > 0);
+                    // Use loadPixels approach if pixels are ready
+                    if (img2 && img2.width > 0 && img2.pixels && img2.pixels.length > 0 && p.width > 0 && p.height > 0) {
+                        // Map canvas coordinates to image coordinates
+                        const imgX = p.constrain(Math.floor(this.x / p.width * img2.width), 0, img2.width - 1);
+                        const imgY = p.constrain(Math.floor(this.y / p.height * img2.height), 0, img2.height - 1);
 
-                    // *** DEBUG LOG: Log source only once ***
-                    if (!loggedSource) {
-                        console.log(`About sketch sampling from: ${isUsingPlaceholder ? 'Placeholder' : 'me3.png'}`);
-                        loggedSource = true; // Set flag so it doesn't log repeatedly
-                    }
+                        // Calculate index in the pixels array
+                        // Each pixel takes 4 spots (R, G, B, A)
+                        const d = p.pixelDensity(); // Account for display density
+                        const index = 4 * ((imgY * d) * (img2.width * d) + (imgX * d));
 
-                    // Get color from image at current position, safely
-                    if (sourceImage && sourceImage.width > 0 && sourceImage.height > 0 && p.width > 0 && p.height > 0) {
-                        const imgX = p.constrain(Math.floor(this.x / p.width * sourceImage.width), 0, sourceImage.width - 1);
-                        const imgY = p.constrain(Math.floor(this.y / p.height * sourceImage.height), 0, sourceImage.height - 1);
-                        try {
-                           this.color = sourceImage.get(imgX, imgY);
-                           let alpha = p.map(p.brightness(this.color), 0, 255, 150, 255);
-                           this.color.setAlpha(alpha);
-                        } catch (e) {
-                            this.color = p.color(30, 39, 46, 100);
+                        // Check if index is valid before accessing pixels
+                        if (index >= 0 && index + 3 < img2.pixels.length) {
+                            const r = img2.pixels[index];
+                            const g = img2.pixels[index + 1];
+                            const b = img2.pixels[index + 2];
+                            const a = img2.pixels[index + 3]; // Use alpha from image
+
+                            // Adjust alpha based on brightness for visual effect (optional)
+                            const brightnessAlpha = p.map(p.brightness(p.color(r, g, b)), 0, 255, 150, 255);
+
+                            this.color = p.color(r, g, b, p.min(a, brightnessAlpha)); // Combine image alpha and brightness alpha
+
+                        } else {
+                             // Fallback if index calculation is wrong
+                             this.color = p.color(30, 39, 46, 100);
                         }
+
                     } else {
+                         // Fallback color if img2 is not valid/loaded or pixels not ready
                          this.color = p.color(30, 39, 46, 100);
                     }
                 }
@@ -1368,43 +1375,22 @@
             } // End Point Class
 
 
-            // Function to create a placeholder image gradient
-            function createPlaceholderImage(w, h) {
-                 const validW = Math.max(1, Math.floor(w));
-                 const validH = Math.max(1, Math.floor(h));
-                let placeholder = p.createImage(validW, validH);
-                placeholder.loadPixels();
-                for (let i = 0; i < placeholder.width; i++) {
-                    for (let j = 0; j < placeholder.height; j++) {
-                        let r = p.map(i, 0, placeholder.width, 30, 191);
-                        let g = p.map(j, 0, placeholder.height, 39, 162);
-                        let b = p.map(i + j, 0, placeholder.width + placeholder.height, 46, 76);
-                        placeholder.set(i, j, p.color(r, g, b, 200));
-                    }
-                }
-                placeholder.updatePixels();
-                return placeholder;
-            }
-
             p.preload = function() {
                 // *** IMAGE PATH: Ensure 'me3.png' is the correct path relative to your HTML file ***
                 const imagePath = 'me3.png'; // <-- CHECK AND CHANGE THIS PATH IF NEEDED
                 console.log(`[preload] Attempting to load image from: ${imagePath}`);
                 img2 = p.loadImage(imagePath,
-                    // Success
+                    // Success callback
                     (loadedImage) => {
-                         // *** DEBUG LOG: Log dimensions on successful load ***
-                        console.log(`[preload] Image '${imagePath}' loaded successfully. Dimensions: ${loadedImage.width}x${loadedImage.height}`);
+                        console.log(`[preload] Image '${imagePath}' loaded successfully.`);
                         if (loadedImage.width > 0 && loadedImage.height > 0) {
                            imageRatio = loadedImage.height / loadedImage.width;
                         } else {
-                             // *** DEBUG LOG: Explicit log for zero dimensions ***
-                            console.warn(`[preload] Image '${imagePath}' loaded but has zero dimensions!`);
-                            imageRatio = 9/16;
-                            img2 = null; // Mark img2 as invalid
+                           console.warn(`[preload] Image '${imagePath}' loaded but has zero dimensions! Using default ratio.`);
+                           imageRatio = 9/16;
                         }
                     },
-                    // Error
+                    // Error callback
                     (err) => {
                         console.error(`[preload] Failed to load image '${imagePath}'. Error:`, err);
                         img2 = null;
@@ -1426,35 +1412,28 @@
                  try {
                     canvas = p.createCanvas(containerWidth, containerHeight);
                     canvas.parent('about-image-container');
-
-                    // *** ADDED: Attempt to set willReadFrequently attribute ***
-                    if (p.drawingContext) { // Check if context exists
-                        p.drawingContext.willReadFrequently = true;
-                        console.log("[setup] Set canvas context willReadFrequently = true");
-                    } else {
-                        console.warn("[setup] Could not access drawingContext to set willReadFrequently.");
-                    }
-
                  } catch(e) {
                      console.error("Error creating about canvas:", e);
                      p.noCanvas();
                      return;
                  }
 
-                // Create placeholder ONLY if the real image failed or is invalid
-                if (!img2 || img2.width <= 0) {
-                     console.log("[setup] Real image 'me3.png' is invalid or failed to load. Creating and using placeholder.");
-                     placeholderImage = createPlaceholderImage(p.width, p.height);
+                // Load pixels if the image is valid
+                if (img2 && img2.width > 0 && img2.height > 0) {
+                     console.log("[setup] Image 'me3.png' loaded. Calling loadPixels().");
+                     img2.loadPixels(); // Load pixel data into img2.pixels
+                     // Check if pixels array was populated (can sometimes be async despite preload)
+                     // We'll rely on the check within updateColor for readiness.
+                     pixelsLoaded = true; // Assume loaded for now, check in updateColor
                 } else {
-                     console.log("[setup] Real image 'me3.png' seems valid. Will use it for sampling.");
-                     placeholderImage = null; // Ensure placeholder is null if real image is okay
+                     console.warn("[setup] Image 'me3.png' failed to load or is invalid. Cannot load pixels.");
+                     pixelsLoaded = false;
                 }
 
                 p.background(30, 39, 46);
 
                 points = [];
                  console.log(`[setup] Initializing ${numPoints} points for about sketch.`);
-                 loggedSource = false; // Reset log flag for this setup
                  for (let i = 0; i < numPoints; i++) {
                     let pt = new Point();
                     pt.resetPosition();
@@ -1468,17 +1447,19 @@
                  try {
                     time += 0.01;
 
+                    // Background with fade effect
                     p.fill(30, 39, 46, 30);
                     p.noStroke();
                     p.rect(0, 0, p.width, p.height);
 
+                    // Update and display points
                     for (let point of points) {
                         point.update();
                         point.display();
                     }
                  } catch (e) {
                      console.error("Error in about draw loop:", e);
-                     p.noLoop(); // Stop the loop if drawing errors occur
+                     p.noLoop();
                  }
             };
 
@@ -1497,18 +1478,16 @@
                  if (containerWidth > 0 && containerHeight > 0) {
                     p.resizeCanvas(containerWidth, containerHeight);
 
-                    // *** ADDED: Re-apply willReadFrequently on resize ***
-                     if (p.drawingContext) {
-                        p.drawingContext.willReadFrequently = true;
-                     }
-
-                    // Recreate placeholder if needed
-                    if (placeholderImage) {
-                         placeholderImage = createPlaceholderImage(p.width, p.height);
+                    // Reload pixels if the image was valid
+                    if (img2 && img2.width > 0 && img2.height > 0) {
+                         console.log("[windowResized] Reloading pixels for resized canvas.");
+                         img2.loadPixels();
+                         pixelsLoaded = true;
+                    } else {
+                         pixelsLoaded = false;
                     }
 
-                    // Reset point positions and log flag
-                    loggedSource = false;
+                    // Reset point positions
                     for (let point of points) {
                         point.resetPosition();
                     }
