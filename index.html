@@ -682,7 +682,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1>Hi, I'm <span style="color: var(--secondary-color);">Tony Komforty</span>.<br>Frontend Developer <br> & <span style="color: var(--secondary-color);">Creative Coder</span></h1>
-                <p></p>
+                <p>Making interactive experiences.</p>
                 <div class="hero-btns">
                     <a href="#portfolio" class="btn btn-primary">View My Work</a>
                     <a href="#contact" class="btn btn-secondary">Get In Touch</a>
@@ -769,7 +769,7 @@
                     </div>
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" placeholder="Tell me about your projects!" required></textarea>
+                        <textarea id="message" name="message" placeholder="Tell me about your project or any opportunities" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
@@ -1037,7 +1037,7 @@
           let mouseInactiveTimeout; // Store timeout ID
 
           class PointStructure {
-             // ... (PointStructure class remains the same as previous version) ...
+             // ... (PointStructure class remains largely the same) ...
              constructor(offsetX = 0, offsetY = 0, hue) {
               this.points = [];
               // Initial center based on current canvas dimensions OR defaults if p.width/height are 0
@@ -1045,7 +1045,7 @@
               this.centerY = (p.height || 150)/2 + offsetY;
               this.targetX = this.centerX;
               this.targetY = this.centerY;
-              this.followSpeed = p.random(0.08, 0.12); // Faster following
+              this.followSpeed = p.random(0.08, 0.12);
               this.connectionRadius = 150;
 
               // Define colors based on hue parameter
@@ -1059,7 +1059,7 @@
               this.thirdColor = p.color(255, 255, 255);    // White highlights
 
               // Create points for this structure
-              const numPoints = p.floor(p.random(25, 35)); // More points
+              const numPoints = p.floor(p.random(25, 35));
               for (let i = 0; i < numPoints; i++) {
                 const angle = p.random(p.TWO_PI);
                 const radius = p.random(30, 180);
@@ -1069,15 +1069,15 @@
                 this.points.push({
                   pos: p.createVector(x, y),
                   vel: p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5)),
-                  basePos: p.createVector(radius * p.cos(angle), radius * p.sin(angle)), // Relative position
+                  basePos: p.createVector(radius * p.cos(angle), radius * p.sin(angle)),
                   size: p.random(2, 10),
-                  independenceLevel: p.random(0.3, 0.9), // Higher independence
+                  independenceLevel: p.random(0.3, 0.9),
                   color: p.lerpColor(
                     p.lerpColor(this.primaryColor, this.accentColor, p.random()),
                     this.thirdColor,
-                    p.random() > 0.8 ? p.random(0.3, 0.5) : 0 // Occasionally mix in white
+                    p.random() > 0.8 ? p.random(0.3, 0.5) : 0
                   ),
-                  phase: p.random(p.TWO_PI), // Random starting phase for pulsing
+                  phase: p.random(p.TWO_PI),
                   noiseOffsetX: p.random(1000),
                   noiseOffsetY: p.random(2000)
                 });
@@ -1093,7 +1093,6 @@
                 // Smoother drift motion when mouse is inactive
                 const noiseX = p.noise(time * 0.2) * 2 - 1;
                 const noiseY = p.noise(time * 0.2 + 500) * 2 - 1;
-                // Drift around the center more subtly
                 this.targetX = p.lerp(this.targetX, p.width/2 + (this.centerX - p.width/2) + 50 * noiseX, 0.01);
                 this.targetY = p.lerp(this.targetY, p.height/2 + (this.centerY - p.height/2) + 40 * noiseY, 0.01);
               }
@@ -1107,60 +1106,53 @@
               // Update all points in this structure
               for (let point of this.points) {
                  if (!point.pos || !point.vel || !point.basePos) continue; // Safety check
-                // Calculate the point's target position (relative to structure center)
                 const targetX = this.centerX + point.basePos.x;
                 const targetY = this.centerY + point.basePos.y;
 
-                // Enhanced independent motion using multiple noise functions
+                // Enhanced independent motion
                 const t = time * 0.4 * point.independenceLevel;
                 const noiseX = p.map(p.noise(point.noiseOffsetX + t, time * 0.1), 0, 1, -3, 3);
                 const noiseY = p.map(p.noise(point.noiseOffsetY + t, time * 0.1), 0, 1, -3, 3);
                 const noise2X = p.map(p.noise(point.noiseOffsetX + 500, t * 0.7), 0, 1, -1.5, 1.5);
                 const noise2Y = p.map(p.noise(point.noiseOffsetY + 500, t * 0.7), 0, 1, -1.5, 1.5);
 
-                // Apply stronger independent forces
                 point.vel.x += (noiseX + noise2X * 0.5) * 0.2 * point.independenceLevel;
                 point.vel.y += (noiseY + noise2Y * 0.5) * 0.2 * point.independenceLevel;
 
-                // Add force toward target position - weak tether
+                // Add force toward target position
                 const toTarget = p.createVector(targetX - point.pos.x, targetY - point.pos.y);
                 const tetherStrength = 0.02 * (1 - point.independenceLevel * 0.7);
                 toTarget.mult(tetherStrength);
                 point.vel.add(toTarget);
 
-                // Occasionally add random impulses
+                // Random impulses
                 if (p.random() < 0.03 * point.independenceLevel) {
                   point.vel.x += p.random(-1, 1) * point.independenceLevel;
                   point.vel.y += p.random(-1, 1) * point.independenceLevel;
                 }
 
-                // Higher velocity limit
                 point.vel.limit(2 + point.independenceLevel * 2.5);
-
-                // Update position
                 point.pos.add(point.vel);
-
-                // Add damping to velocity
                 point.vel.mult(0.92 + 0.04 * point.independenceLevel);
 
-                // Ensure points stay within canvas bounds with bounce
+                // Bounds checking
                 if (point.pos.x < 0 || point.pos.x > p.width) {
-                  point.pos.x = p.constrain(point.pos.x, 0, p.width); // Prevent going out
-                  point.vel.x *= -0.7; // Reverse and dampen velocity
+                  point.pos.x = p.constrain(point.pos.x, 0, p.width);
+                  point.vel.x *= -0.7;
                 }
                 if (point.pos.y < 0 || point.pos.y > p.height) {
-                  point.pos.y = p.constrain(point.pos.y, 0, p.height); // Prevent going out
-                  point.vel.y *= -0.7; // Reverse and dampen velocity
+                  point.pos.y = p.constrain(point.pos.y, 0, p.height);
+                  point.vel.y *= -0.7;
                 }
               }
             }
 
             draw(time) {
-              // Draw connecting lines between points first
-              p.strokeWeight(1); // Default stroke weight for lines
+              // Draw connecting lines
+              p.strokeWeight(1);
               for (let i = 0; i < this.points.length; i++) {
                 for (let j = i + 1; j < this.points.length; j++) {
-                   if (!this.points[i]?.pos || !this.points[j]?.pos) continue; // Safety check
+                   if (!this.points[i]?.pos || !this.points[j]?.pos) continue;
                   const p1 = this.points[i].pos;
                   const p2 = this.points[j].pos;
                   const d = p.dist(p1.x, p1.y, p2.x, p2.y);
@@ -1169,29 +1161,28 @@
                     const alpha = p.map(d, 0, this.connectionRadius, 100, 0);
                     const lineColor = p.lerpColor(this.points[i].color, this.points[j].color, 0.5);
                     p.stroke(lineColor.levels[0], lineColor.levels[1], lineColor.levels[2], alpha * 0.8);
-                    // Adjust line weight based on distance
                     p.strokeWeight(p.map(d, 0, this.connectionRadius, 1.5, 0.3));
                     p.line(p1.x, p1.y, p2.x, p2.y);
                   }
                 }
               }
 
-              // Then draw the points with glow effect
-              p.noStroke(); // Ensure no stroke for points
+              // Draw points with glow
+              p.noStroke();
               for (let point of this.points) {
-                 if (!point.pos || !point.color) continue; // Safety check
+                 if (!point.pos || !point.color) continue;
                 const pulsingSize = point.size * (0.8 + 0.3 * p.sin(time * 1.5 + point.phase));
-                const glowColor = p.color(point.color); // Get base color
+                const glowColor = p.color(point.color);
 
-                // Draw glow effect (multiple transparent circles)
-                for (let i = 3; i > 0; i--) {
-                  glowColor.setAlpha(40 / i); // Set alpha for glow layer
+                // Glow effect
+                for (let i = 3; i > 0; i--) { // Reduced glow layers from 3 to 2 for potential perf gain
+                  glowColor.setAlpha(50 / i); // Slightly increased glow alpha
                   p.fill(glowColor);
-                  p.circle(point.pos.x, point.pos.y, pulsingSize * (i * 0.7));
+                  p.circle(point.pos.x, point.pos.y, pulsingSize * (i * 0.6)); // Adjusted glow size multiplier
                 }
 
-                // Draw the main point (fully opaque)
-                glowColor.setAlpha(255); // Reset alpha to opaque
+                // Main point
+                glowColor.setAlpha(255);
                 p.fill(glowColor);
                 p.circle(point.pos.x, point.pos.y, pulsingSize);
               }
@@ -1203,12 +1194,10 @@
                 this.targetX = this.centerX;
                 this.targetY = this.centerY;
 
-                // Reposition points relative to the new center
                 for (let point of this.points) {
-                     if (!point.pos || !point.basePos || !point.vel) continue; // Skip invalid points
+                     if (!point.pos || !point.basePos || !point.vel) continue;
                     point.pos.x = this.centerX + point.basePos.x;
                     point.pos.y = this.centerY + point.basePos.y;
-                    // Reset velocity to prevent sudden jumps
                     point.vel.set(p.random(-0.5, 0.5), p.random(-0.5, 0.5));
                 }
             }
@@ -1218,21 +1207,19 @@
             const heroContainer = document.getElementById('hero-container');
             if (!heroContainer || heroContainer.offsetWidth <= 0) {
                 console.error("Hero container not found or has zero width in setup!");
-                p.noCanvas(); // Prevent canvas creation if container is invalid
+                p.noCanvas();
                 return;
             }
             try {
                 canvas = p.createCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
-                canvas.parent('hero-container'); // Attach canvas
+                canvas.parent('hero-container');
             } catch (e) {
                  console.error("Error creating hero canvas:", e);
                  p.noCanvas();
                  return;
             }
 
-
-            // Create structures only after canvas is sized
-            pointStructures = []; // Clear previous structures
+            pointStructures = [];
             pointStructures.push(new PointStructure(p.width * -0.2, p.height * -0.15, 'blue'));
             pointStructures.push(new PointStructure(p.width * 0.2, p.height * 0.15, 'gold'));
 
@@ -1245,66 +1232,53 @@
                 if (mouseInactiveTimeout) clearTimeout(mouseInactiveTimeout);
                 mouseInactiveTimeout = setTimeout(() => { mousePos.active = false; }, 1000);
             });
-
             p.canvas.addEventListener('mouseleave', () => {
                 mousePos.active = false;
                 if (mouseInactiveTimeout) clearTimeout(mouseInactiveTimeout);
             });
 
-             // Initialize mouse position
              mousePos.x = p.width/2;
              mousePos.y = p.height/2;
           };
 
           p.draw = function() {
-             if (!canvas || p.width <= 0 || p.height <= 0) return; // Don't draw if setup failed or canvas invalid
+             if (!canvas || p.width <= 0 || p.height <= 0) return;
              try {
-                 p.clear(); // Clear with transparency
+                 p.clear();
 
-                // Draw border manually inside the canvas
-                p.stroke(255, 25); // Subtle white border
+                // Draw border
+                p.stroke(255, 25);
                 p.strokeWeight(1);
                 p.noFill();
-                p.rect(0, 0, p.width - 1, p.height - 1); // Draw slightly inside bounds
+                p.rect(0, 0, p.width - 1, p.height - 1);
 
-                const time = p.millis() * 0.001; // Time in seconds
+                const time = p.millis() * 0.001;
 
-                // Update and draw all structures
+                // Update and draw structures
                 for (let structure of pointStructures) {
                   structure.update(time, mousePos.x, mousePos.y, mousePos.active);
                   structure.draw(time);
                 }
              } catch (e) {
                  console.error("Error in hero draw loop:", e);
-                 p.noLoop(); // Stop the draw loop on error
+                 p.noLoop();
              }
           };
 
           // Handle window resize
           p.windowResized = function() {
-             if (!canvas) return; // Don't resize if setup failed
+             if (!canvas) return;
             const heroContainer = document.getElementById('hero-container');
-             // Check container validity and visibility
              const heroStyle = heroContainer ? window.getComputedStyle(heroContainer) : null;
              if (!heroContainer || heroContainer.offsetWidth <= 0 || (heroStyle && heroStyle.display === 'none')) {
                   console.log("Hero container hidden or invalid on resize, skipping canvas resize.");
-                  // Optionally hide the canvas if the container becomes hidden
-                  // canvas.style('display', 'none');
                   return;
              }
 
-             // Make canvas visible if it was hidden
-             // canvas.style('display', 'block');
-
-             // Only resize if dimensions are positive
              if (heroContainer.offsetWidth > 0 && heroContainer.offsetHeight > 0) {
                  p.resizeCanvas(heroContainer.offsetWidth, heroContainer.offsetHeight);
-
-                 // Recalculate positions
                  pointStructures[0].resetPosition(p.width, p.height, -0.2, -0.15);
                  pointStructures[1].resetPosition(p.width, p.height, 0.2, 0.15);
-
-                 // Reset mouse position
                  mousePos.x = p.width / 2;
                  mousePos.y = p.height / 2;
                  mousePos.active = false;
@@ -1319,41 +1293,32 @@
         const aboutSketch = function(p) {
             let img2;
             let time = 0;
-            let imageRatio = 9/16; // Default aspect ratio
+            let imageRatio = 9/16;
             let points = [];
-            const numPoints = 5000; // Adjusted for performance if needed
+            const numPoints = 2000; // Keep reduced point count
             let canvas;
-            let placeholderImage = null; // To store the generated placeholder
+            let placeholderImage = null;
+            let loggedSource = false; // Flag to log source only once
 
-             // ... (Point class remains the same as previous version) ...
+             // ... (Point class remains the same) ...
              class Point {
                 constructor() {
-                    // Initialize position only after canvas exists (in setup)
-                    this.x = 0;
-                    this.y = 0;
-                    this.size = p.random(1, 5); // Smaller base size
+                    this.x = 0; this.y = 0;
+                    this.size = p.random(1, 5);
                     this.color = p.color(0);
-                    this.seed = p.random(1000); // Random seed for noise
-                    // updateColor will be called after setup positions points
+                    this.seed = p.random(1000);
                 }
-
-                 // Method to initialize or reset position
                 resetPosition() {
-                    if (p.width > 0 && p.height > 0) { // Check canvas dimensions
+                    if (p.width > 0 && p.height > 0) {
                         this.x = p.random(p.width);
                         this.y = p.random(p.height);
-                        this.updateColor(); // Update color based on new position
+                        this.updateColor();
                     }
                 }
-
-
                 update() {
-                    // Use Perlin noise for organic movement
-                    const nx = p.noise(this.seed, time * 0.1); // Slower movement
+                    const nx = p.noise(this.seed, time * 0.1);
                     const ny = p.noise(this.seed + 500, time * 0.1);
-
-                    // Move points across the canvas
-                    this.x = p.map(nx, 0, 1, -p.width * 0.1, p.width * 1.1); // Allow moving slightly off-screen
+                    this.x = p.map(nx, 0, 1, -p.width * 0.1, p.width * 1.1);
                     this.y = p.map(ny, 0, 1, -p.height * 0.1, p.height * 1.1);
 
                     // Wrap around edges
@@ -1362,42 +1327,41 @@
                     if (this.y < -this.size) this.y = p.height + this.size;
                     if (this.y > p.height + this.size) this.y = -this.size;
 
-                    // Sample color from image at current position
                     this.updateColor();
 
-                    // Size based on brightness
                     const brightness = p.brightness(this.color);
-                    // More subtle size variation, ensure minimum size
                     this.size = p.max(1, p.map(brightness, 0, 255, 1, 6));
                 }
-
                 updateColor() {
                     // Determine which image source to use (real or placeholder)
                     let sourceImage = (img2 && img2.width > 0) ? img2 : placeholderImage;
+                    let isUsingPlaceholder = !(img2 && img2.width > 0);
+
+                    // *** DEBUG LOG: Log source only once ***
+                    if (!loggedSource) {
+                        console.log(`About sketch sampling from: ${isUsingPlaceholder ? 'Placeholder' : 'me3.png'}`);
+                        loggedSource = true; // Set flag so it doesn't log repeatedly
+                    }
 
                     // Get color from image at current position, safely
                     if (sourceImage && sourceImage.width > 0 && sourceImage.height > 0 && p.width > 0 && p.height > 0) {
-                        // Constrain coordinates to be within the image dimensions
                         const imgX = p.constrain(Math.floor(this.x / p.width * sourceImage.width), 0, sourceImage.width - 1);
                         const imgY = p.constrain(Math.floor(this.y / p.height * sourceImage.height), 0, sourceImage.height - 1);
                         try {
                            this.color = sourceImage.get(imgX, imgY);
-                           // Add slight alpha variation based on brightness
                            let alpha = p.map(p.brightness(this.color), 0, 255, 150, 255);
                            this.color.setAlpha(alpha);
                         } catch (e) {
-                            this.color = p.color(30, 39, 46, 100); // Default fallback color
+                            this.color = p.color(30, 39, 46, 100);
                         }
                     } else {
-                         this.color = p.color(30, 39, 46, 100); // Default if image not loaded or canvas not ready
+                         this.color = p.color(30, 39, 46, 100);
                     }
                 }
-
                 display() {
                     p.noStroke();
                     p.fill(this.color);
-                    // Ensure size is positive
-                    if (this.size > 0 && !isNaN(this.x) && !isNaN(this.y)) { // Check for NaN positions
+                    if (this.size > 0 && !isNaN(this.x) && !isNaN(this.y)) {
                        p.ellipse(this.x, this.y, this.size, this.size);
                     }
                 }
@@ -1406,7 +1370,6 @@
 
             // Function to create a placeholder image gradient
             function createPlaceholderImage(w, h) {
-                 // Ensure dimensions are positive
                  const validW = Math.max(1, Math.floor(w));
                  const validH = Math.max(1, Math.floor(h));
                 let placeholder = p.createImage(validW, validH);
@@ -1424,24 +1387,28 @@
             }
 
             p.preload = function() {
-                // Load me3.png
-                img2 = p.loadImage('me3.png',
+                // *** IMAGE PATH: Ensure 'me3.png' is the correct path relative to your HTML file ***
+                const imagePath = 'me3.png'; // <-- CHECK AND CHANGE THIS PATH IF NEEDED
+                console.log(`[preload] Attempting to load image from: ${imagePath}`);
+                img2 = p.loadImage(imagePath,
                     // Success
                     (loadedImage) => {
-                        console.log('me3.png loaded successfully');
+                         // *** DEBUG LOG: Log dimensions on successful load ***
+                        console.log(`[preload] Image '${imagePath}' loaded successfully. Dimensions: ${loadedImage.width}x${loadedImage.height}`);
                         if (loadedImage.width > 0 && loadedImage.height > 0) {
                            imageRatio = loadedImage.height / loadedImage.width;
                         } else {
-                            console.warn('Loaded image me3.png has zero dimensions.');
-                            imageRatio = 9/16; // Use default ratio
+                             // *** DEBUG LOG: Explicit log for zero dimensions ***
+                            console.warn(`[preload] Image '${imagePath}' loaded but has zero dimensions!`);
+                            imageRatio = 9/16;
                             img2 = null; // Mark img2 as invalid
                         }
                     },
                     // Error
                     (err) => {
-                        console.error('Failed to load me3.png. Error:', err);
-                        img2 = null; // Ensure img2 is null on error
-                        imageRatio = 9/16; // Use default ratio
+                        console.error(`[preload] Failed to load image '${imagePath}'. Error:`, err);
+                        img2 = null;
+                        imageRatio = 9/16;
                     }
                 );
             };
@@ -1450,8 +1417,8 @@
                 const aboutImageContainer = document.getElementById('about-image-container');
                 if (!aboutImageContainer || aboutImageContainer.offsetWidth <= 0) {
                     console.error("About image container not found or has zero width in setup!");
-                     p.noCanvas(); // Prevent canvas creation
-                    return; // Don't proceed
+                     p.noCanvas();
+                    return;
                 }
                 const containerWidth = aboutImageContainer.offsetWidth;
                 const containerHeight = Math.max(200, containerWidth * imageRatio);
@@ -1459,61 +1426,70 @@
                  try {
                     canvas = p.createCanvas(containerWidth, containerHeight);
                     canvas.parent('about-image-container');
+
+                    // *** ADDED: Attempt to set willReadFrequently attribute ***
+                    if (p.drawingContext) { // Check if context exists
+                        p.drawingContext.willReadFrequently = true;
+                        console.log("[setup] Set canvas context willReadFrequently = true");
+                    } else {
+                        console.warn("[setup] Could not access drawingContext to set willReadFrequently.");
+                    }
+
                  } catch(e) {
                      console.error("Error creating about canvas:", e);
                      p.noCanvas();
                      return;
                  }
 
-
-                // Create placeholder if the real image failed to load or is invalid
+                // Create placeholder ONLY if the real image failed or is invalid
                 if (!img2 || img2.width <= 0) {
+                     console.log("[setup] Real image 'me3.png' is invalid or failed to load. Creating and using placeholder.");
                      placeholderImage = createPlaceholderImage(p.width, p.height);
-                     console.log("Using placeholder image for about sketch.");
+                } else {
+                     console.log("[setup] Real image 'me3.png' seems valid. Will use it for sampling.");
+                     placeholderImage = null; // Ensure placeholder is null if real image is okay
                 }
 
-                p.background(30, 39, 46); // Solid background
+                p.background(30, 39, 46);
 
-                // Create and position points
                 points = [];
+                 console.log(`[setup] Initializing ${numPoints} points for about sketch.`);
+                 loggedSource = false; // Reset log flag for this setup
                  for (let i = 0; i < numPoints; i++) {
                     let pt = new Point();
-                    pt.resetPosition(); // Set initial position and color
+                    pt.resetPosition();
                     points.push(pt);
                 }
             };
 
             p.draw = function() {
-                 if (!canvas || p.width <= 0 || p.height <= 0) return; // Don't draw if setup failed or canvas invalid
+                 if (!canvas || p.width <= 0 || p.height <= 0) return;
 
                  try {
-                    time += 0.01; // Increment time
+                    time += 0.01;
 
-                    // Semi-transparent background for trails
                     p.fill(30, 39, 46, 30);
                     p.noStroke();
                     p.rect(0, 0, p.width, p.height);
 
-                    // Update and display points
                     for (let point of points) {
                         point.update();
                         point.display();
                     }
                  } catch (e) {
                      console.error("Error in about draw loop:", e);
-                     p.noLoop(); // Stop draw loop on error
+                     p.noLoop(); // Stop the loop if drawing errors occur
                  }
             };
 
             // Handle window resize
             p.windowResized = function() {
-                 if (!canvas) return; // Don't resize if setup failed
+                 if (!canvas) return;
                 const aboutImageContainer = document.getElementById('about-image-container');
                  if (!aboutImageContainer || aboutImageContainer.offsetWidth <= 0) {
                       console.log("About container hidden or invalid on resize, skipping canvas resize.");
-                      return; // Check container
+                      return;
                  }
-
 
                 const containerWidth = aboutImageContainer.offsetWidth;
                 const containerHeight = Math.max(200, containerWidth * imageRatio);
@@ -1521,17 +1497,23 @@
                  if (containerWidth > 0 && containerHeight > 0) {
                     p.resizeCanvas(containerWidth, containerHeight);
 
-                    // Recreate placeholder if it's being used, as its size depends on canvas size
+                    // *** ADDED: Re-apply willReadFrequently on resize ***
+                     if (p.drawingContext) {
+                        p.drawingContext.willReadFrequently = true;
+                     }
+
+                    // Recreate placeholder if needed
                     if (placeholderImage) {
                          placeholderImage = createPlaceholderImage(p.width, p.height);
                     }
 
-                    // Reset point positions
+                    // Reset point positions and log flag
+                    loggedSource = false;
                     for (let point of points) {
                         point.resetPosition();
                     }
 
-                    p.background(30, 39, 46); // Redraw background
+                    p.background(30, 39, 46);
                  } else {
                      console.warn("Skipping resize for about sketch due to zero dimensions.");
                  }
@@ -1541,15 +1523,17 @@
 
         // Initialize P5 sketches safely after DOM is ready
         function initSketches() {
+             console.log("Initializing sketches...");
              try {
                  const heroContainer = document.getElementById('hero-container');
                  const heroStyle = heroContainer ? window.getComputedStyle(heroContainer) : null;
                  if (heroContainer && heroContainer.offsetWidth > 0 && heroStyle && heroStyle.display !== 'none') {
+                      console.log("Attempting to initialize hero sketch.");
                       new p5(heroSketch);
                  } else if (heroContainer && heroStyle && heroStyle.display === 'none') {
                      console.log("Hero sketch container is hidden by CSS, not initializing.");
                  } else {
-                     // console.error("Hero sketch container not found or has zero width."); // Reduce console noise
+                     // console.error("Hero sketch container not found or has zero width.");
                  }
              } catch (e) {
                   console.error("Error initializing hero sketch:", e);
@@ -1558,9 +1542,10 @@
              try {
                  const aboutImageContainer = document.getElementById('about-image-container');
                  if (aboutImageContainer && aboutImageContainer.offsetWidth > 0) {
+                      console.log("Attempting to initialize about sketch.");
                       new p5(aboutSketch);
                  } else {
-                      // console.error("About sketch container not found or has zero width."); // Reduce console noise
+                      // console.error("About sketch container not found or has zero width.");
                  }
              } catch (e) {
                   console.error("Error initializing about sketch:", e);
@@ -1569,34 +1554,16 @@
 
         // Use DOMContentLoaded and requestAnimationFrame for robust initialization
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(initSketches));
+            document.addEventListener('DOMContentLoaded', () => {
+                 console.log("DOM Loaded. Requesting animation frame for sketch init.");
+                 requestAnimationFrame(initSketches);
+            });
         } else {
+             console.log("DOM already loaded. Requesting animation frame for sketch init.");
             requestAnimationFrame(initSketches); // Already loaded
         }
 
     </script>
 
-    <script>
-        // Wait a short moment for dynamic content to potentially load
-        setTimeout(() => {
-            // Select all direct child text nodes of the body
-            const childNodes = document.body.childNodes;
-            for (let i = childNodes.length - 1; i >= 0; i--) {
-                const node = childNodes[i];
-                // Check if it's a text node and contains only "Loading..." (with potential whitespace)
-                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === 'Loading...') {
-                    console.log("Found and removing stray 'Loading...' text node.");
-                    node.remove();
-                    break; // Assume only one instance needs removing
-                }
-                // Also check for simple paragraph or div elements containing only "Loading..."
-                 if (node.nodeType === Node.ELEMENT_NODE && (node.tagName === 'P' || node.tagName === 'DIV') && node.textContent.trim() === 'Loading...') {
-                     console.log(`Found and removing stray <${node.tagName}> element containing 'Loading...'`);
-                     node.remove();
-                     break;
-                 }
-            }
-        }, 500); // Wait 500ms before checking
-    </script>
     </body>
 </html>
